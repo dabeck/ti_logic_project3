@@ -1,7 +1,7 @@
 package de.unikassel.ti.logic.project3;
 
-import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 import de.unikassel.ti.logic.project3.model.FunctionSymbol;
@@ -40,7 +40,7 @@ public class TermEnumerator {
 	    }
 	}
 	return t;
-    }
+	}
 
     private static boolean isFullyInstantiated(Term t) {
 	if (t instanceof Placeholder) {
