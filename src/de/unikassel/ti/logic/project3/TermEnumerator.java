@@ -29,18 +29,19 @@ public class TermEnumerator {
 
 	while (!found && hasNext()) {
 	    termpattern = worklist.poll();
+	    //	    System.out.println("Next term pattern: " + termpattern.toString());
 	    t = instantiate(termpattern, signature);
 	    if (isFullyInstantiated(t)) {
 		found = true;
 	    } else {
-		worklist.add(t);
+       		worklist.add(t);
 	    }
 	    if (!increaseToNextTerm(termpattern, signature.size(), true)) {
 		worklist.add(termpattern);
 	    }
 	}
 	return t;
-	}
+    }
 
     private static boolean isFullyInstantiated(Term t) {
 	if (t instanceof Placeholder) {
@@ -56,7 +57,7 @@ public class TermEnumerator {
 
     private static Term instantiate(Term t, Signature sig) {
 	Vector<Term> ts = new Vector<Term>();
-	boolean found = false;
+	// boolean found = false;
 
 	if (t instanceof Placeholder) {
 	    FunctionSymbol s = sig.get(((Placeholder) t).getPoint());
@@ -67,15 +68,10 @@ public class TermEnumerator {
 	    return new Term(s,ts);
 	} else {
 	    for (Term s: t.getSubterms()) {
-		if (found || isFullyInstantiated(s)) {
-		    ts.add(t.makeCopy());
-		} else {
-		    ts.add(instantiate(s, sig));
-		    found = true;
-		}
+		ts.add(instantiate(s, sig));
 	    }
+	    return new Term(t.getTopSymbol(), ts);
 	}
-	return new Term(t.getTopSymbol(), ts);
     }
 
     private static boolean increaseToNextTerm(Term t, int l, boolean b) {
@@ -143,5 +139,4 @@ class Placeholder extends Term {
 	return new Placeholder(point);
     }
 }
-
 
