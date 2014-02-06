@@ -8,13 +8,6 @@ import formula;
 
 import java.io.StringReader;
 
-import org.sat4j.minisat.SolverFactory;
-import org.sat4j.minisat.core.Solver;
-import org.sat4j.reader.DimacsReader;
-import org.sat4j.reader.Reader;
-import org.sat4j.specs.IProblem;
-import org.sat4j.specs.ISolver;
-
 import de.unikassel.ti.logic.project3.model.Formula;
 
 public class Tool {
