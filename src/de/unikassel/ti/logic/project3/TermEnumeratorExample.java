@@ -15,10 +15,10 @@ public class TermEnumeratorExample {
 
 	// add as many function symbols as you like to your signature
 	sig.add(new FunctionSymbol("c",0));
-		// sig.add(new FunctionSymbol("f",1));
+//		 sig.add(new FunctionSymbol("f",1));
 		sig.add(new FunctionSymbol("d", 0));
 		// sig.add(new FunctionSymbol("g", 2));
-	// sig.add(new FunctionSymbol("h",1));
+//	 sig.add(new FunctionSymbol("h",1));
 
 	// create a new term enumerator object for this signature
 	TermEnumerator te = new TermEnumerator(sig);
