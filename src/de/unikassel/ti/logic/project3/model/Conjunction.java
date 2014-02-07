@@ -23,6 +23,10 @@ public class Conjunction extends Formula {
 	return FormulaType.AND;
     }
 
+    @Override public Formula transformToPositiveNF() {
+        return this;
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	boolean lpar = left_arg.getType().getPrecedence() < this.getType().getPrecedence();
 	boolean rpar = right_arg.getType().getPrecedence() < this.getType().getPrecedence();

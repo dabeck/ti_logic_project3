@@ -24,6 +24,11 @@ public class ForallQuantification extends Formula {
 	return FormulaType.FORALL;
     }
 
+    public Formula transformToPositiveNF() {
+
+        return new ExistsQuantification(getVariable(), getArg().transformToPositiveNF());
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	boolean par = arg.getType().getPrecedence() < this.getType().getPrecedence();
 

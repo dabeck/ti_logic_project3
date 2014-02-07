@@ -24,6 +24,10 @@ public class ExistsQuantification extends Formula {
 	return FormulaType.EXISTS;
     }
 
+    public Formula transformToPositiveNF() {
+        return new ForallQuantification(getVariable(), getArg().transformToPositiveNF());
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	boolean par = arg.getType().getPrecedence() < this.getType().getPrecedence();
 
