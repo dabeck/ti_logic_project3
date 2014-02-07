@@ -75,8 +75,10 @@ public class TermEnumerator {
     }
 
     private static boolean increaseToNextTerm(Term t, int l, boolean b) {
+	@SuppressWarnings("unused")
 	Vector<Term> ts = new Vector<Term>();
 	boolean increasefurther = b;
+	@SuppressWarnings("unused")
 	int i;
 
 	if (t instanceof Placeholder) {

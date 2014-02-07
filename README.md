@@ -4,7 +4,7 @@ ti_logic_project3
 TI Logik Projektaufgabe 3 (WS13/14)
 
 Vorgehensweise:
-1. Formel einlsen																ok
+1. Formel einlesen																ok
 2. Formel in positive Normalform umwandeln
 3. Formel in Pränex Normalform umwandeln
 4. Formel skolemisieren
