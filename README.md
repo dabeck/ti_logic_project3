@@ -10,7 +10,10 @@ Vorgehensweise:
   3. Formel in Pränex Normalform umwandeln
     1. Formel muss zweimal durchlaufen werden
     2. Beim ersten durchlauf freie und gebundene Variablen in Datenstruktur sammeln und freie umbenennen.
+      1. freie Vars in map sammeln und auf sich selbst mappen, falls keien gebundene Version gefunden wird.
+      2. gebundene Vars in liste sammeln
     3. Beim zweiten durchlauf die Äquivalenzen anwenden um PränixNormalform zu erhalten.
+      1. nach Skript
   4. Formel skolemisieren
   5. Herbrand Expansion (Satz von Herbrand, endliche Teilmengen)
   6. Gilmore Algorithmus
