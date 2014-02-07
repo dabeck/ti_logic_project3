@@ -2,6 +2,7 @@ package de.unikassel.ti.logic.project3.converters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Vector;
 
 import de.unikassel.ti.logic.project3.model.Conjunction;
@@ -16,88 +17,114 @@ import de.unikassel.ti.logic.project3.model.Term;
 
 public class SkolemConverter {
 
-	private static ArrayList<String> boundVariables;
-	private static HashMap<String, String> unboundVariables;
+	/**
+	 * List of all FORALL variables.
+	 */
+	private static ArrayList<String> replForall = new ArrayList<String>();
 	
-	private static HashMap<String, String> replacedVariables = new HashMap<String, String>();
+	/**
+	 * List of all EXISTS variables and their corresponding replacement-term.
+	 */
+	private static HashMap<String, Term> replExist = new HashMap<String, Term>();
 	
+	/**
+	 * List of all variables in the formula, to prevent duplicates thru replacement.
+	 */
+	private static ArrayList<String> variables = new ArrayList<String>();
 	
 	/**
 	 * 
 	 * @param f
-	 * @param rExistList List of Replacements. 
-	 * @param rForallList List of variable names of all preceding FORALL's.
 	 * @return
 	 */
-	private static Formula convert(Formula f, HashMap<String, Term> rExistList, ArrayList<String> rForallList) {		
+	public static Formula convert(Formula f) {
+
 		if (f instanceof ExistsQuantification) {
 			ExistsQuantification ex = ((ExistsQuantification) f);
-			// TODO: ECHTE replacements in Liste einfuegen
-			rExistList.put(ex.getVariable(), new Term(new FunctionSymbol("s", 0), null));
-			return convert(((ExistsQuantification) f).getArg(), rExistList, rForallList);
+			
+			replExist.put(ex.getVariable(), getReplacement());
+			
+			return convert(ex.getArg());
 		} else if (f instanceof ForallQuantification) {
-			ForallQuantification fa = (ForallQuantification) f;
-			rForallList.add(fa.getVariable());
-			return new ForallQuantification(fa.getVariable(), convert(((ForallQuantification) f).getArg(), rExistList, rForallList));
+			ForallQuantification fa = ((ForallQuantification) f);
+			
+			replForall.add(fa.getVariable());
+			
+			return new ForallQuantification(fa.getVariable(), convert(fa.getArg()));
 		} else if (f instanceof Conjunction) {
-			// TODO
-			return new Conjunction(f, f);
+			Conjunction c = ((Conjunction) f);
+			return new Conjunction(convert(c.getLeftArg()), convert(c.getRightArg()));
 		} else if (f instanceof Disjunction) {
-			// TODO
-			return new Disjunction(f, f);
+			Disjunction d = ((Disjunction) f);
+			return new Disjunction(convert(d.getLeftArg()), convert(d.getRightArg()));
 		} else if (f instanceof Negation) {
-			// TODO
-			return new Negation(f);
+			Negation n = ((Negation) f);
+			return new Negation(convert(n.getArg()));
 		} else if (f instanceof RelationFormula) {
-			// TODO
 			RelationFormula rf = ((RelationFormula) f);
-			Vector<Term> terms = rf.getTerms();
-			for (Term term : terms) {
-				replace(term, rExistList, rForallList);
+			
+			for(int i = 0; i != rf.getTerms().size(); i++) {
+				rf.getTerms().set(i, replace(rf.getTerms().get(i)));
 			}
 			
-			return new RelationFormula(rf.getName(), null);
+			return rf;
 		} else {
-			throw new UnsupportedOperationException(f.toString());
+			throw new UnsupportedOperationException(
+					"Unexpected Formula in SkolemConverter.convert() : " + 
+					f.toString());
 		}
 	}
 	
-	
-	private static void replace(Term term, HashMap<String, Term> rExistList, ArrayList<String> rForallList) {
-		// TODO
-		if (term.getSubterms().isEmpty()) {
-			if (rExistList.containsKey(term.getTopSymbol().getName())) {
-				// hier Replacement vornehmen
-				term = rExistList.get(term.getTopSymbol().getName());
+	private static Term getReplacement() {
+		if (replForall.size() == 0) {
+			return new Term(new FunctionSymbol(randomConstant(), 0), null);
+		} else {
+			Vector<Term> subTerms = new Vector<Term>();
+			for(String s: replForall) {
+				subTerms.add(new Term(new FunctionSymbol(s, 0), null));
+			}
+			return new Term(new FunctionSymbol("f", replForall.size()), subTerms);
+		}
+	}
+
+	/**
+	 * 
+	 * @param t
+	 * @return
+	 */
+	private static Term replace(Term t) {
+		
+		if (t.getSubterms().size() == 0) {
+			if (replExist.containsKey(t.getTopSymbol().getName())) {
+				return replExist.get(t.getTopSymbol().getName());
+			} else {
+				return t;
 			}
 		} else {
-			//term
+			for(int i = 0; i != t.getSubterms().size(); i++) {
+				t.getSubterms().set(i, replace(t.getSubterms().get(i)));
+			}
+			return t;
 		}
 	}
-
-	public static Formula convert(Formula f) {
-		return convert(f, new HashMap<String, Term>(), new ArrayList<String>());
-	}
 	
-	
-
-	
-	
-	
-	public static ArrayList<String> getBoundVariables() {
-		return boundVariables;
-	}
-
-	public static void setBoundVariables(ArrayList<String> boundVariables) {
-		SkolemConverter.boundVariables = boundVariables;
-	}
-
-	public HashMap<String, String> getUnboundVariables() {
-		return unboundVariables;
+	/**
+	 * 
+	 * @return
+	 */
+	private static String randomConstant() {
+		Random r = new Random();
+		String constant;
+		
+		do {
+			constant = Character.toString((char) (97 + r.nextInt(25)));
+		} while(variables.contains(constant));
+		
+		// remember the new variable name for further replacements to prevent duplicates
+		// TODO: initialize the variables-List with the variable names
+		variables.add(constant);
+		
+		return constant;
 	}
 
-	public void setUnboundVariables(HashMap<String, String> unboundVariables) {
-		this.unboundVariables = unboundVariables;
-	}
-	
 }
