@@ -9,7 +9,7 @@ import java_cup.runtime.*;
  * This class is a simple example lexer.
  */
 
-class Scanner implements java_cup.runtime.Scanner {
+public class Scanner implements java_cup.runtime.Scanner {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
@@ -444,7 +444,7 @@ private boolean zzAtBOL = true;
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  Scanner(java.io.Reader in) {
+  public Scanner(java.io.Reader in) {
     this.zzReader = in;
   }
 
