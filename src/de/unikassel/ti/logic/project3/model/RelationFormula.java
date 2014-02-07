@@ -21,6 +21,10 @@ public class RelationFormula extends Formula {
 	return FormulaType.REL;
     }
 
+    public Formula transformToPositiveNF() {
+        return this;
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	s.append(name);
 	if (terms.size() > 0) {

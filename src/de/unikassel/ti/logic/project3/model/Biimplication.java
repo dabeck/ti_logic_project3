@@ -23,6 +23,13 @@ public class Biimplication extends Formula {
 	return FormulaType.BIIMP;
     }
 
+    // transforms 'A <-> B' to '(A & B) | (-A & -B)'
+    public Formula transformToPositiveNF() {
+        return new Disjunction(
+            new Conjunction(left_arg.transformToPositiveNF(), right_arg.transformToPositiveNF()),
+            new Conjunction(new Negation(left_arg.transformToPositiveNF()), new Negation(right_arg.transformToPositiveNF())));
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	s = left_arg.toString(s);
 	s.append(" <-> ");

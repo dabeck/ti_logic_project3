@@ -23,6 +23,14 @@ public class Implication extends Formula {
 	return FormulaType.IMP;
     }
 
+    // transforms 'A -> B' to '-A | B'
+    public Formula transformToPositiveNF() {
+        return new Disjunction(
+            new Negation(left_arg.transformToPositiveNF()),
+            right_arg.transformToPositiveNF()
+        );
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	boolean lpar = left_arg.getType().getPrecedence() <= this.getType().getPrecedence();
 	boolean rpar = right_arg.getType().getPrecedence() < this.getType().getPrecedence();
