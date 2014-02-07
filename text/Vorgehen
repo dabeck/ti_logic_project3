@@ -1,0 +1,20 @@
+
+
+Anwendung des Satzes von Herbrand (Quelle: Wikipedia (http://de.wikipedia.org/wiki/Satz_von_Herbrand))
+======================================================
+Der Satz bildet die Grundlage eines Semi-Entscheidungsverfahrens für die Unerfüllbarkeit von prädikatenlogischen Formeln. 
+Gesucht ist eine (einfache) Teilklasse von Strukturen/ Modellen, so dass eine Formel genau dann unerfüllbar (bzw. erfüllbar) wird,
+wenn sie kein (bzw. ein) Modell in dieser Teilklasse hat.
+
+Will man von einer beliebigen prädikatenlogischen Formel F die Unerfüllbarkeit nachweisen, bringt man diese zuerst mittels gebundener Umbenennung 
+in eine bereinigte Form. Anschließend bildet man den Existenzabschluss, um die freien Variablen zu entfernen und so eine geschlossene Formel 
+zu erhalten. Die Quantoren werden nach links umgestellt, sodass man eine Pränex-Normalform erhält. Anschließend werden die Existenzquantoren 
+entfernt, um eine Skolemform zu erhalten. Die Formel F', die man nach diesen Umformungsschritten erhält, ist nicht mehr äquivalent, aber 
+erfüllbarkeitsäquivalent zur Ausgangsformel F. Diese recht schwache Eigenschaft genügt, um Unerfüllbarkeit von F nachzuweisen.
+
+Nun bildet man zur Formel F' ein Herbrand-Universum, eine Herbrand-Struktur und darauf aufbauend eine Herbrand-Expansion. 
+Jedes Element der Expansion lässt sich mittels einer aussagenlogischen Formel identifizieren. Dazu weist man jedem Prädikat eine 
+aussagenlogische Variable zu. Die Belegungsfunktion bel weist einer aussagenlogischen Variable genau dann 1 zu, wenn auch das Prädikat 
+den Wahrheitswert 1 hat. Die aussagenlogische Formel ist somit genau dann erfüllbar, wenn auch die prädikatenlogische Formel F' erfüllbar ist.
+
+Mit dem Algorithmus von Gilmore kann man anschließend die Unerfüllbarkeit von F' und somit auch F zeigen.
