@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.unikassel.ti.logic.project3.factories.VariableFactory;
 import de.unikassel.ti.logic.project3.model.Conjunction;
 import de.unikassel.ti.logic.project3.model.Disjunction;
 import de.unikassel.ti.logic.project3.model.ExistsQuantification;
@@ -16,9 +17,8 @@ import de.unikassel.ti.logic.project3.model.Term;
 
 public class PrenexConverter {
 	
+	private static VariableFactory varfac;
 	private static ArrayList<String> variables = new ArrayList<String>();
-	private static ArrayList<String> boundVariables = new ArrayList<String>();
-	private static Map<String, String> freeVariables = new HashMap<String, String>();
 	
 	/**
 	 * Collects all variables into our lists
@@ -26,46 +26,71 @@ public class PrenexConverter {
 	 * @param f
 	 *            formula
 	 */
-	private static void collectVariables(Formula f) {
+	private static void renameBoundVariables(Formula f,
+	        Map<String, String> boundVariables) {
+
+		if (boundVariables == null) {
+			boundVariables = new HashMap<String, String>();
+		}
+
 		if (f instanceof Negation) {
-			collectVariables(((Negation) f).getArg());
+			renameBoundVariables(((Negation) f).getArg(), boundVariables);
 		} else if (f instanceof ExistsQuantification) {
+
 			String var = ((ExistsQuantification) f).getVariable();
+			String newVar = varfac.getNewVariableString();
 			
-			if (!boundVariables.contains(var)) {
-				boundVariables.add(var);
+			while (variables.contains(newVar)) {
+				newVar = varfac.getNewVariableString();
 			}
+			variables.add(newVar);
+
+			if (!boundVariables.containsKey(var)) {
+				boundVariables.put(var, newVar);
+			}
+			((ExistsQuantification) f).setVariable(newVar);
 			
-			collectVariables(((ExistsQuantification) f).getArg());
+			renameBoundVariables(((ExistsQuantification) f).getArg(),
+			        boundVariables);
+
 		} else if (f instanceof ForallQuantification) {
+			
 			String var = ((ForallQuantification) f).getVariable();
+			String newVar = varfac.getNewVariableString();
 			
-			if (!boundVariables.contains(var)) {
-				boundVariables.add(var);
+			while (variables.contains(newVar)) {
+				newVar = varfac.getNewVariableString();
 			}
+			variables.add(newVar);
+
+			if (!boundVariables.containsKey(var)) {
+				boundVariables.put(var, newVar);
+			}
+			((ForallQuantification) f).setVariable(newVar);
 			
-			collectVariables(((ForallQuantification) f).getArg());
+			renameBoundVariables(((ForallQuantification) f).getArg(),
+			        boundVariables);
 		} else if (f instanceof Disjunction) {
 			Disjunction d = (Disjunction) f;
 			
 			Formula leftArg = d.getLeftArg();
 			Formula rightArg = d.getRightArg();
 			
-			collectVariables(leftArg);
-			collectVariables(rightArg);
+			renameBoundVariables(leftArg, boundVariables);
+			renameBoundVariables(rightArg, boundVariables);
 		} else if (f instanceof Conjunction) {
 			Conjunction c = (Conjunction) f;
 			
 			Formula leftArg = c.getLeftArg();
 			Formula rightArg = c.getRightArg();
 			
-			collectVariables(leftArg);
-			collectVariables(rightArg);
+			renameBoundVariables(leftArg, boundVariables);
+			renameBoundVariables(rightArg, boundVariables);
 		} else if (f instanceof RelationFormula) {
 			RelationFormula rf = (RelationFormula) f;
 
 			for (Term t : rf.getTerms()) {
-				variables.add(collectTerms(t));
+				checkAndRenameTerms(t, boundVariables);
 			}
 
 		}
@@ -74,27 +99,34 @@ public class PrenexConverter {
 	
 
 	/**
-	 * Collect function symbols for terms/subterms
+	 * Rename function symbols for terms/subterms
 	 * 
 	 * @param t
 	 *            Term
+	 * @param boundVariables
 	 * @return String symbol name
 	 */
-	private static String collectTerms(Term t) {
+	private static void checkAndRenameTerms(Term t,
+	        Map<String, String> boundVariables) {
 		if (t.getSubterms().size() > 0) {
 			for (Term st : t.getSubterms()) {
-				return collectTerms(st);
+				checkAndRenameTerms(st, boundVariables);
 			}
 		} else {
-			return t.getTopSymbol().getName();
+			String symbolName = t.getTopSymbol().getName();
+
+			if (boundVariables.containsKey(symbolName)) {
+				String newName = boundVariables.get(symbolName);
+				t.getTopSymbol().setName(newName);
+			} else {
+				variables.add(symbolName);
+			}
 		}
-		
-		return null;
 	}
 
 	public static Formula convert(Formula f) {
 		
-		// TOOD:
+		varfac = VariableFactory.getFactoryInstance();
 		
 		return f;
 	}

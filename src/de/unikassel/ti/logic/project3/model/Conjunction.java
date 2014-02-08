@@ -77,7 +77,6 @@ public class Conjunction extends Formula {
             System.err.println("ERROR: unexpected object. Expected 'Quantor' or 'RelationFormula.'");
         }
 
-        // FIXME ExistsQuantification can accure here
         if ("exist".equals(quantorType)) {
             currentQuantor =  new ExistsQuantification(var, new Conjunction(le, ri));
         } else if ("forall".equals(quantorType)) {
