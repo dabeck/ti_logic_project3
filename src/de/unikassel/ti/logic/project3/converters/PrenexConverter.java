@@ -32,6 +32,7 @@ public class PrenexConverter {
 
 		if (boundVariables == null) {
 			boundVariables = new HashMap<String, String>();
+			variables.clear();
 		}
 
 		if (f instanceof Negation) {
