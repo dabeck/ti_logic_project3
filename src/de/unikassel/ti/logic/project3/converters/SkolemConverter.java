@@ -71,7 +71,7 @@ public class SkolemConverter {
 		} else {
 			throw new UnsupportedOperationException(
 					"Unexpected Formula in SkolemConverter.convert() : " + 
-					f.toString());
+ f.toString());
 		}
 	}
 	
@@ -88,6 +88,7 @@ public class SkolemConverter {
 	}
 
 	/**
+	 * 
 	 * 
 	 * @param t
 	 * @return

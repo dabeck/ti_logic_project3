@@ -1,28 +1,32 @@
 package de.unikassel.ti.logic.project3.model;
 
 public class FunctionSymbol {
-
-    private String name;
-    private int arity;
-
-    public FunctionSymbol(String n, int a) {
-	name = n;
-	arity = a;
-    }
-
-    public String getName() {
-	return name;
-    }
-
-    public int getArity() {
-	return arity;
-    }
-
-    public String toString() {
-	return name;
-    }
-
-    public boolean equals(FunctionSymbol s) {
-	return name.equals(s.getName()) && arity == s.getArity();
-    }
+	
+	private String name;
+	private int arity;
+	
+	public FunctionSymbol(String n, int a) {
+		name = n;
+		arity = a;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public int getArity() {
+		return arity;
+	}
+	
+	public String toString() {
+		return name;
+	}
+	
+	public boolean equals(FunctionSymbol s) {
+		return name.equals(s.getName()) && arity == s.getArity();
+	}
 }

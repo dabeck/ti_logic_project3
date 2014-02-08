@@ -1,15 +1,15 @@
-package de.unikassel.ti.logic.project3;
-
-import de.unikassel.ti.logic.project3.model.Formula;
-import org.junit.Assert;
-import org.junit.Test;
+package de.unikassel.ti.logic.project3.tests;
 
 import java.io.StringReader;
 
-/**
- * Created by Valentyn on 06.02.2014.
- */
-public class PrenexNFTest {
+import org.junit.Assert;
+import org.junit.Test;
+
+import de.unikassel.ti.logic.project3.Scanner;
+import de.unikassel.ti.logic.project3.parser;
+import de.unikassel.ti.logic.project3.model.Formula;
+
+public class PrenexTest {
 
     // AND
 
