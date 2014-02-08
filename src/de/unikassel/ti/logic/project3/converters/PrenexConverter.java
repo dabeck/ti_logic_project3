@@ -1,6 +1,7 @@
 package de.unikassel.ti.logic.project3.converters;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ public class PrenexConverter {
 	
 	private static UniqueSymbolFactory varfac;
 	private static ArrayList<String> variables = new ArrayList<String>();
+	private static Formula root;
 	
 	/**
 	 * Collects all variables into our lists
@@ -125,10 +127,70 @@ public class PrenexConverter {
 		}
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param f
+	 */
+	private static void existanceConclusion(Formula f,
+	        Collection<String> renamedBoundValues) {
+		if (f instanceof Negation) {
+			existanceConclusion(((Negation) f).getArg(), renamedBoundValues);
+		} else if (f instanceof ExistsQuantification) {
+			existanceConclusion(((ExistsQuantification) f).getArg(),
+			        renamedBoundValues);
+		} else if (f instanceof ForallQuantification) {
+			existanceConclusion(((ForallQuantification) f).getArg(),
+			        renamedBoundValues);
+		} else if (f instanceof Conjunction) {
+			existanceConclusion(((Conjunction) f).getLeftArg(),
+			        renamedBoundValues);
+			existanceConclusion(((Conjunction) f).getRightArg(),
+			        renamedBoundValues);
+		} else if (f instanceof Disjunction) {
+			existanceConclusion(((Disjunction) f).getLeftArg(),
+			        renamedBoundValues);
+			existanceConclusion(((Disjunction) f).getRightArg(),
+			        renamedBoundValues);
+		} else if (f instanceof RelationFormula) {
+			RelationFormula rf = (RelationFormula) f;
+			
+			for (Term t : rf.getTerms()) {
+				checkForFreeVarAndCreateExists(t, renamedBoundValues);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param t
+	 * @param renamedBoundValues
+	 */
+	private static void checkForFreeVarAndCreateExists(Term t,
+	        Collection<String> renamedBoundValues) {
+		if (t.getSubterms().size() > 0) {
+			for (Term st : t.getSubterms()) {
+				checkForFreeVarAndCreateExists(st, renamedBoundValues);
+			}
+		} else {
+			String symbolName = t.getTopSymbol().getName();
+			
+			if (!renamedBoundValues.contains(symbolName)) {
+				ExistsQuantification newroot = new ExistsQuantification(
+				        symbolName, root);
+				
+				root = newroot;
+			}
+		}
+	}
+
 	public static Formula convert(Formula f) {
 		
+		root = f;
 		varfac = UniqueSymbolFactory.getFactoryInstance();
 		renameBoundVariables(f, null);
+		// existanceConclusion(f, renamedBoundValues);
 		
 		return f;
 	}
