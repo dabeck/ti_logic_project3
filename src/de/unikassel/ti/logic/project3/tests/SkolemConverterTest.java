@@ -1,9 +1,10 @@
-package de.unikassel.ti.logic.project3.converters;
+package de.unikassel.ti.logic.project3.tests;
 
 import java.io.StringReader;
 
 import de.unikassel.ti.logic.project3.Scanner;
 import de.unikassel.ti.logic.project3.parser;
+import de.unikassel.ti.logic.project3.converters.SkolemConverter;
 import de.unikassel.ti.logic.project3.model.Formula;
 
 public class SkolemConverterTest {
