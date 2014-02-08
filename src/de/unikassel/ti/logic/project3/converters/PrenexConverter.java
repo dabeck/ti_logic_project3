@@ -18,8 +18,9 @@ import de.unikassel.ti.logic.project3.model.Term;
 
 public class PrenexConverter {
 	
-	private static UniqueSymbolFactory varfac;
+	private static UniqueSymbolFactory symbolFactory;
 	private static ArrayList<String> variables = new ArrayList<String>();
+	private static ArrayList<String> renamedVariables = new ArrayList<String>();
 	private static Formula root;
 	
 	/**
@@ -42,15 +43,16 @@ public class PrenexConverter {
 		} else if (f instanceof ExistsQuantification) {
 
 			String var = ((ExistsQuantification) f).getVariable();
-			String newVar = varfac.getNewVariableString();
+			String newVar = symbolFactory.getNewVariableString();
 			
 			while (variables.contains(newVar)) {
-				newVar = varfac.getNewVariableString();
+				newVar = symbolFactory.getNewVariableString();
 			}
 			variables.add(newVar);
 
 			if (!boundVariables.containsKey(var)) {
 				boundVariables.put(var, newVar);
+				renamedVariables.add(newVar);
 			}
 			((ExistsQuantification) f).setVariable(newVar);
 			
@@ -60,15 +62,16 @@ public class PrenexConverter {
 		} else if (f instanceof ForallQuantification) {
 			
 			String var = ((ForallQuantification) f).getVariable();
-			String newVar = varfac.getNewVariableString();
+			String newVar = symbolFactory.getNewVariableString();
 			
 			while (variables.contains(newVar)) {
-				newVar = varfac.getNewVariableString();
+				newVar = symbolFactory.getNewVariableString();
 			}
 			variables.add(newVar);
 
 			if (!boundVariables.containsKey(var)) {
 				boundVariables.put(var, newVar);
+				renamedVariables.add(newVar);
 			}
 			((ForallQuantification) f).setVariable(newVar);
 			
@@ -104,8 +107,7 @@ public class PrenexConverter {
 	/**
 	 * Rename function symbols for terms/subterms
 	 * 
-	 * @param t
-	 *            Term
+	 * @param t Term
 	 * @param boundVariables
 	 * @return String symbol name
 	 */
@@ -128,35 +130,38 @@ public class PrenexConverter {
 	}
 
 	/**
+	 * Create existance conclusion for formula f.
+	 * <p>
+	 * Free variables get bound by existance quantification.
+	 *  </p>
+	 *  <p>
+	 *  When traversing the formula<br />
+	 * tree, a variable is tested whether she is in the collection of the bound variables. If she's not, <br />
+	 * the variable is free and gets further bound by a new existance quantification inserted as a new <br />
+	 * root of the formula.
+	 *  </p>
 	 * 
-	 * 
-	 * @param f
+	 * @param f The formula
+	 * @param renamedBoundValues The collection of the bound variables in the formula. 
 	 */
-	private static void existanceConclusion(Formula f,
-	        Collection<String> renamedBoundValues) {
+	private static void existanceConclusion(Formula f) {
 		if (f instanceof Negation) {
-			existanceConclusion(((Negation) f).getArg(), renamedBoundValues);
+			existanceConclusion(((Negation) f).getArg());
 		} else if (f instanceof ExistsQuantification) {
-			existanceConclusion(((ExistsQuantification) f).getArg(),
-			        renamedBoundValues);
+			existanceConclusion(((ExistsQuantification) f).getArg());
 		} else if (f instanceof ForallQuantification) {
-			existanceConclusion(((ForallQuantification) f).getArg(),
-			        renamedBoundValues);
+			existanceConclusion(((ForallQuantification) f).getArg());
 		} else if (f instanceof Conjunction) {
-			existanceConclusion(((Conjunction) f).getLeftArg(),
-			        renamedBoundValues);
-			existanceConclusion(((Conjunction) f).getRightArg(),
-			        renamedBoundValues);
+			existanceConclusion(((Conjunction) f).getLeftArg());
+			existanceConclusion(((Conjunction) f).getRightArg());
 		} else if (f instanceof Disjunction) {
-			existanceConclusion(((Disjunction) f).getLeftArg(),
-			        renamedBoundValues);
-			existanceConclusion(((Disjunction) f).getRightArg(),
-			        renamedBoundValues);
+			existanceConclusion(((Disjunction) f).getLeftArg());
+			existanceConclusion(((Disjunction) f).getRightArg());
 		} else if (f instanceof RelationFormula) {
 			RelationFormula rf = (RelationFormula) f;
 			
 			for (Term t : rf.getTerms()) {
-				checkForFreeVarAndCreateExists(t, renamedBoundValues);
+				checkForFreeVarAndCreateExists(t);
 			}
 		}
 	}
@@ -167,16 +172,15 @@ public class PrenexConverter {
 	 * @param t
 	 * @param renamedBoundValues
 	 */
-	private static void checkForFreeVarAndCreateExists(Term t,
-	        Collection<String> renamedBoundValues) {
+	private static void checkForFreeVarAndCreateExists(Term t) {
 		if (t.getSubterms().size() > 0) {
 			for (Term st : t.getSubterms()) {
-				checkForFreeVarAndCreateExists(st, renamedBoundValues);
+				checkForFreeVarAndCreateExists(st);
 			}
 		} else {
 			String symbolName = t.getTopSymbol().getName();
 			
-			if (!renamedBoundValues.contains(symbolName)) {
+			if (!renamedVariables.contains(symbolName)) {
 				ExistsQuantification newroot = new ExistsQuantification(
 				        symbolName, root);
 				
@@ -188,11 +192,14 @@ public class PrenexConverter {
 	public static Formula convert(Formula f) {
 		
 		root = f;
-		varfac = UniqueSymbolFactory.getFactoryInstance();
+		symbolFactory = UniqueSymbolFactory.getFactoryInstance();
 		renameBoundVariables(f, null);
-		// existanceConclusion(f, renamedBoundValues);
+		 existanceConclusion(f);
+		 // IMPORTANT: after existance conclusion, the next operation has to be performed on the new "root"!!!!!!
+		Formula transformedToPrenexNF = root.transformToPrenexNF();
 		
-		return f;
+//		return transformedToPrenexNF;
+		return root;
 	}
 
 	public static ArrayList<String> getVariableList() {
