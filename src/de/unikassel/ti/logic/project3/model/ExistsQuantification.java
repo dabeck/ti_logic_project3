@@ -28,6 +28,11 @@ public class ExistsQuantification extends Formula {
         return new ForallQuantification(getVariable(), getArg().transformToPositiveNF());
     }
 
+    @Override public Formula transformToPrenexNF() {
+        // TODO check
+        return this;
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	boolean par = arg.getType().getPrecedence() < this.getType().getPrecedence();
 

@@ -24,9 +24,12 @@ public class ForallQuantification extends Formula {
 	return FormulaType.FORALL;
     }
 
-    public Formula transformToPositiveNF() {
-
+    @Override public Formula transformToPositiveNF() {
         return new ExistsQuantification(getVariable(), getArg().transformToPositiveNF());
+    }
+
+    @Override public Formula transformToPrenexNF() {
+        return this;
     }
 
     public StringBuffer toString(StringBuffer s) {

@@ -21,7 +21,11 @@ public class RelationFormula extends Formula {
 	return FormulaType.REL;
     }
 
-    public Formula transformToPositiveNF() {
+    @Override public Formula transformToPositiveNF() {
+        return this;
+    }
+
+    @Override public Formula transformToPrenexNF() {
         return this;
     }
 
