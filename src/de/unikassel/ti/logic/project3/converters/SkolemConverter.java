@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
+import de.unikassel.ti.logic.project3.factories.UniqueSymbolFactory;
 import de.unikassel.ti.logic.project3.model.Conjunction;
 import de.unikassel.ti.logic.project3.model.Disjunction;
 import de.unikassel.ti.logic.project3.model.ExistsQuantification;
@@ -65,10 +66,19 @@ public class SkolemConverter {
 	
 	/**
 	 * 
+	 */
+	private static ArrayList<String> functionSymbols = new ArrayList<String>();
+	
+	private static UniqueSymbolFactory varfac = null;
+	
+	/**
+	 * 
 	 * @param f
 	 * @return
 	 */
 	public static Formula convert(Formula f, ArrayList<String> v) {
+		varfac  = UniqueSymbolFactory.getFactoryInstance();
+		
 		// TODO: replace when PrenexConverter is ready
 		// Initialize list of variables of the given formula.
 		collectVariables(f);
@@ -87,6 +97,7 @@ public class SkolemConverter {
 		replExist.clear();
 		replForall.clear();
 		variables.clear();
+		functionSymbols.clear();
 		
 		return result;
 	}
@@ -118,6 +129,12 @@ public class SkolemConverter {
 		} else if (f instanceof RelationFormula) {
 			RelationFormula rf = ((RelationFormula) f);
 			for(Term t: rf.getTerms()) {
+				/*if (t.getSubterms().size() > 0) {
+					String name = t.getTopSymbol().getName();
+					if (!functionSymbols.contains(name)) {
+						functionSymbols.add(name);
+					}
+				}*/
 				collectTerms(t);
 			}
 		} else {
@@ -139,6 +156,12 @@ public class SkolemConverter {
 			}
 		} else {
 			for(Term st: t.getSubterms()) {
+				if (st.getTopSymbol().getArity() != 0) {
+					String name = st.getTopSymbol().getName();
+					if (!functionSymbols.contains(name)) {
+						functionSymbols.add(name);
+					}
+				}
 				collectTerms(st);
 			}
 		}
@@ -213,13 +236,27 @@ public class SkolemConverter {
 	 */
 	private static Term getReplacement() {
 		if (replForall.size() == 0) {
-			return new Term(new FunctionSymbol(getNewVariableName(), 0), null);
+			String newConstSymbolString = varfac.getNewConstSymbolString();
+			while (functionSymbols.contains(newConstSymbolString) || variables.contains(newConstSymbolString)) {
+				newConstSymbolString = varfac.getNewFunctionSymbolString();
+			}
+			// insert only in functionSymbol-List, because constant = functionSymbol with arity 0
+			functionSymbols.add(newConstSymbolString);
+			
+			return new Term(new FunctionSymbol(newConstSymbolString, 0), null);
 		} else {
+			String newFunctionSymbolString = varfac.getNewFunctionSymbolString();
+			while (functionSymbols.contains(newFunctionSymbolString)) {
+				newFunctionSymbolString = varfac.getNewFunctionSymbolString();
+			}
+			functionSymbols.add(newFunctionSymbolString);
+			
 			Vector<Term> subTerms = new Vector<Term>();
 			for(String s: replForall) {
 				subTerms.add(new Term(new FunctionSymbol(s, 0), null));
 			}
-			return new Term(new FunctionSymbol(getNewVariableName(), replForall.size()), subTerms);
+			
+			return new Term(new FunctionSymbol(newFunctionSymbolString, replForall.size()), subTerms);
 		}
 	}
 	

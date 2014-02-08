@@ -17,7 +17,7 @@ public class SkolemConverterTest {
 		
 		switch (chosenTestExample) {
 		case 0:
-			p = new parser(new Scanner(new StringReader("EXISTS x ( EXISTS y ( FORALL w ( EXISTS z ( P(x, y, w) | Q(z, x) ) ) ) )")));
+			p = new parser(new Scanner(new StringReader("EXISTS x ( EXISTS y ( FORALL w ( EXISTS z ( P(f(x), y, g(f(g(w)))) | Q(z, x) ) ) ) )")));
 			break;
 		case 1:
 			p = new parser(new Scanner(new StringReader("EXISTS x ( FORALL y ( EXISTS z ( FORALL u ( EXISTS v ( EXISTS w ( P(x, y, z, u, v, w) ) ) ) ) ) )")));
