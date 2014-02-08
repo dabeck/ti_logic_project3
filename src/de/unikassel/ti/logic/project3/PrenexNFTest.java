@@ -11,7 +11,9 @@ import java.io.StringReader;
  */
 public class PrenexNFTest {
 
-    // A & FORALL x B(x)
+    // AND
+
+    // A(y) & FORALL x (B(x))
     @Test public void prenex01() {
 
         final String input = "R(y) & FORALL x (Q(z))";
@@ -33,7 +35,7 @@ public class PrenexNFTest {
         Assert.assertEquals(output, fo.toString());
     }
 
-    // A & FORALL x B(x) ...(reversed)
+    // FORALL x B(x) & A
     @Test public void prenex01reverse() {
 
         final String input = "FORALL x (Q(z)) & R(y)";
@@ -55,7 +57,7 @@ public class PrenexNFTest {
         Assert.assertEquals(output, fo.toString());
     }
 
-    // A & EXISTS x B(x)
+    // A(y) & EXISTS x (B(x))
     @Test public void prenex02() {
 
         final String input = "A(y) & EXISTS x (B(x))";
@@ -77,11 +79,11 @@ public class PrenexNFTest {
         Assert.assertEquals(output, fo.toString());
     }
 
-    // EXISTS x B(x) & A ...(reversed)
+    // EXISTS x (B(x)) & A(y)
     @Test public void prenex02reverse() {
 
-        final String input = "EXISTS x (Q(z)) & R(y)";
-        final String output = "EXISTS x (Q(z) & R(y))";
+        final String input = "EXISTS x (Q(x)) & R(y)";
+        final String output = "EXISTS x (Q(x) & R(y))";
 
         parser p = new parser(new Scanner(new StringReader(input)));
 
@@ -98,4 +100,7 @@ public class PrenexNFTest {
         System.out.printf("Output: %s\n", fo.toString());
         Assert.assertEquals(output, fo.toString());
     }
+
+
+    // OR
 }
