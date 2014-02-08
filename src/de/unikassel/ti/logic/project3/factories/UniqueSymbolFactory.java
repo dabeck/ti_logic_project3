@@ -79,4 +79,14 @@ public class UniqueSymbolFactory {
 		return new String(relationPrefix + relationCounter++);
 		
 	}
+	
+	/**
+	 * Resets all counters to 0
+	 */
+	public void resetSymbolCounters() {
+		varCounter = 0;
+		functionCounter = 0;
+		constCounter = 0;
+		relationCounter = 0;
+	}
 }
