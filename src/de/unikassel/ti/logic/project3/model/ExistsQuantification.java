@@ -19,6 +19,10 @@ public class ExistsQuantification extends Formula {
 		return variable;
 	}
 	
+	public void setVariable(String variable) {
+		this.variable = variable;
+	}
+
 	public FormulaType getType() {
 		return FormulaType.EXISTS;
 	}

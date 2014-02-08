@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.unikassel.ti.logic.project3.factories.VariableFactory;
+import de.unikassel.ti.logic.project3.factories.UniqueSymbolFactory;
 import de.unikassel.ti.logic.project3.model.Conjunction;
 import de.unikassel.ti.logic.project3.model.Disjunction;
 import de.unikassel.ti.logic.project3.model.ExistsQuantification;
@@ -17,7 +17,7 @@ import de.unikassel.ti.logic.project3.model.Term;
 
 public class PrenexConverter {
 	
-	private static VariableFactory varfac;
+	private static UniqueSymbolFactory varfac;
 	private static ArrayList<String> variables = new ArrayList<String>();
 	
 	/**
@@ -25,6 +25,7 @@ public class PrenexConverter {
 	 * 
 	 * @param f
 	 *            formula
+	 * @return
 	 */
 	private static void renameBoundVariables(Formula f,
 	        Map<String, String> boundVariables) {
@@ -94,7 +95,6 @@ public class PrenexConverter {
 			}
 
 		}
-		
 	}
 	
 
@@ -126,9 +126,14 @@ public class PrenexConverter {
 
 	public static Formula convert(Formula f) {
 		
-		varfac = VariableFactory.getFactoryInstance();
+		varfac = UniqueSymbolFactory.getFactoryInstance();
+		renameBoundVariables(f, null);
 		
 		return f;
+	}
+
+	public static ArrayList<String> getVariableList() {
+		return variables;
 	}
 
 }
