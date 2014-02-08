@@ -7,7 +7,6 @@ import formula;
 */
 
 import java.io.StringReader;
-import java.io.InputStreamReader;
 
 import de.unikassel.ti.logic.project3.model.Formula;
 

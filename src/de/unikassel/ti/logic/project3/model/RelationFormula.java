@@ -13,7 +13,15 @@ public class RelationFormula extends Formula {
 	name = s;
     }
 
-    public Vector<Term> getTerms() {
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Vector<Term> getTerms() {
 	return terms;
     }
 

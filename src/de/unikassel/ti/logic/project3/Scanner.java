@@ -9,7 +9,7 @@ import java_cup.runtime.*;
  * This class is a simple example lexer.
  */
 
-class Scanner implements java_cup.runtime.Scanner {
+public class Scanner implements java_cup.runtime.Scanner {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
@@ -405,7 +405,8 @@ class Scanner implements java_cup.runtime.Scanner {
   private int yyline;
 
   /** the number of characters up to the start of the matched text */
-  private int yychar;
+  @SuppressWarnings("unused")
+private int yychar;
 
   /**
    * the number of characters from the last newline up to the start of the 
@@ -416,7 +417,8 @@ class Scanner implements java_cup.runtime.Scanner {
   /** 
    * zzAtBOL == true <=> the scanner is currently at the beginning of a line
    */
-  private boolean zzAtBOL = true;
+  @SuppressWarnings("unused")
+private boolean zzAtBOL = true;
 
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;
@@ -442,7 +444,7 @@ class Scanner implements java_cup.runtime.Scanner {
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  Scanner(java.io.Reader in) {
+  public Scanner(java.io.Reader in) {
     this.zzReader = in;
   }
 

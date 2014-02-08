@@ -1,0 +1,22 @@
+
+
+Eingabe --> Positive Normalform (PNF)
+=====================================
+
+
+
+
+
+PNF --> Pränex Normalform (PrNF)
+================================
+
+
+
+
+
+
+PrNF --> Skolem Normalform (SNF)
+================================
+(Satz/Lemma x.x) besagt, dass sich jede Formel in PrNF in eine erfüllbarkeitsäquivalente Formel umwandeln lässt.
+
+
