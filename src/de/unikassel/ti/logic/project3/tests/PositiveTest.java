@@ -1,14 +1,13 @@
 package de.unikassel.ti.logic.project3.tests;
 
+import java.io.StringReader;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import de.unikassel.ti.logic.project3.Scanner;
 import de.unikassel.ti.logic.project3.parser;
 import de.unikassel.ti.logic.project3.model.Formula;
-
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.StringReader;
 
 /**
  * Created by Valentyn on 06.02.2014.
