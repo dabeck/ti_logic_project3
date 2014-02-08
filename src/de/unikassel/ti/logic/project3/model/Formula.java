@@ -6,6 +6,7 @@ public abstract class Formula {
     public abstract StringBuffer toString(StringBuffer s);
 
     public abstract Formula transformToPositiveNF();
+    public abstract Formula transformToPrenexNF();
 
     public String toString() {
 	return toString(new StringBuffer()).toString();

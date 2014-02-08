@@ -30,6 +30,11 @@ public class Biimplication extends Formula {
             new Conjunction(new Negation(left_arg.transformToPositiveNF()), new Negation(right_arg.transformToPositiveNF())));
     }
 
+    @Override public Formula transformToPrenexNF() {
+        // TODO check
+        return this;
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	s = left_arg.toString(s);
 	s.append(" <-> ");

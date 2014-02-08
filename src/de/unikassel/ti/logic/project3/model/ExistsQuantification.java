@@ -19,10 +19,6 @@ public class ExistsQuantification extends Formula {
 		return variable;
 	}
 	
-	public void setVariable(String var) {
-		this.variable = var;
-	}
-
 	public FormulaType getType() {
 		return FormulaType.EXISTS;
 	}
@@ -30,6 +26,12 @@ public class ExistsQuantification extends Formula {
 	public Formula transformToPositiveNF() {
 		return new ForallQuantification(getVariable(), getArg()
 		        .transformToPositiveNF());
+	}
+	
+	@Override
+	public Formula transformToPrenexNF() {
+		// TODO check
+		return this;
 	}
 	
 	public StringBuffer toString(StringBuffer s) {

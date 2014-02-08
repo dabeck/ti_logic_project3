@@ -20,7 +20,7 @@ public class Negation extends Formula {
 
     // transforms '- FORALL x R(f(z))' to 'EXISTS x -R(f(z))'
     // transforms '- EXISTS x R(f(z))' to 'FORALL x -R(f(z))'
-    public Formula transformToPositiveNF() {
+    @Override public Formula transformToPositiveNF() {
         Formula fo = null;
         if (arg.getClass().equals(ForallQuantification.class)) {
             fo = new ExistsQuantification(
@@ -44,6 +44,10 @@ public class Negation extends Formula {
             System.out.println("Error: Expected '-FORALL' or '-EXISTS' here, otherwise not implemented yet.");
         }
         return fo;
+    }
+
+    @Override public Formula transformToPrenexNF() {
+        return this;
     }
 
     public StringBuffer toString(StringBuffer s) {

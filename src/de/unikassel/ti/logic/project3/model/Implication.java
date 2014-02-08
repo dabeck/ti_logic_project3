@@ -31,6 +31,11 @@ public class Implication extends Formula {
         );
     }
 
+    @Override public Formula transformToPrenexNF() {
+        // TODO don't know if it's right...
+        return this;
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	boolean lpar = left_arg.getType().getPrecedence() <= this.getType().getPrecedence();
 	boolean rpar = right_arg.getType().getPrecedence() < this.getType().getPrecedence();

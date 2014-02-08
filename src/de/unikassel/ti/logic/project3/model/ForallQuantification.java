@@ -2,7 +2,7 @@ package de.unikassel.ti.logic.project3.model;
 
 
 public class ForallQuantification extends Formula {
-	
+
 	private Formula arg;
 	private String variable;
 	
@@ -28,9 +28,13 @@ public class ForallQuantification extends Formula {
 	}
 	
 	public Formula transformToPositiveNF() {
-		
 		return new ExistsQuantification(getVariable(), getArg()
 		        .transformToPositiveNF());
+	}
+	
+	@Override
+	public Formula transformToPrenexNF() {
+		return this;
 	}
 	
 	public StringBuffer toString(StringBuffer s) {

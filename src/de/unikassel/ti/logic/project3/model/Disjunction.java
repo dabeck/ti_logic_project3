@@ -25,6 +25,11 @@ public class Disjunction extends Formula {
         return this;
     }
 
+    @Override public Formula transformToPrenexNF() {
+        // TODO check
+        return this;
+    }
+
     public StringBuffer toString(StringBuffer s) {
 	boolean lpar = left_arg.getType().getPrecedence() < this.getType().getPrecedence();
 	boolean rpar = right_arg.getType().getPrecedence() < this.getType().getPrecedence();
