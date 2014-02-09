@@ -2,6 +2,9 @@ package de.unikassel.ti.logic.project3;
 
 import java.io.StringReader;
 
+import de.unikassel.ti.logic.project3.converters.PrenexConverter;
+import de.unikassel.ti.logic.project3.converters.SkolemConverter;
+import de.unikassel.ti.logic.project3.converters.SkolemToKnfConverter;
 import de.unikassel.ti.logic.project3.model.Formula;
 
 public class Tool {
@@ -18,15 +21,24 @@ public class Tool {
 		    f = (Formula) p.parse().value;
 		    System.out.println("Input:\n" + f.toString());
 
-		    // TODO: 2. convert formula to PNF. Has to return a formula
-
+		    // 2. convert formula to PNF. Has to return a formula
+		    Formula transformedToPositiveNF = f.transformToPositiveNF();
 		    System.out.println("\nFormula in postive normal form:\n" + f.toString());
-		    // TODO: 3. convert formula to prenex normal form. Has to return a formula
 		    
+		    // 3. convert formula to prenex normal form. Has to return a formula
+		    Formula transformedToPrenexNF = PrenexConverter.convert(transformedToPositiveNF);		    
 		    System.out.println("\nFormula in prenex normal form:\n" + f.toString());
-		    // TODO: 4. convert formula to Skolem normal form. Has to return a formula
 		    
+		    // 4. convert formula to Skolem normal form. Has to return a formula
+		    Formula transformedToSkolemNF = SkolemConverter.convert(transformedToPrenexNF, PrenexConverter.getVariableList());		    
 		    System.out.println("\nFormula in Skolem normal form:\n" + f.toString());
+		    
+		    // 5. Transform to KNF
+		    Formula transformedToKnf = SkolemToKnfConverter.convert(transformedToSkolemNF);
+		    System.out.println("\nFormula in KNF:\n" + f.toString());
+		    
+		    // 6. create signature
+		    
 		}	    
 		catch (Exception e) {
 		    System.out.println("Something went seriously wrong: " + e.getMessage());
