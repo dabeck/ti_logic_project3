@@ -30,8 +30,7 @@ public class SkolemConverterTest {
 		    f = (Formula) p.parse().value;
 		    System.out.println("Input:\n" + f.toString());
 
-		    // TODO: replace null with PrenexConverter.getVariables()
-		    f = SkolemConverter.convert(f, null);
+		    f = SkolemConverter.convert(f);
 		    
 		    System.out.println("\nFormula in Skolem normal form:\n" + f.toString());
 		}	    
