@@ -136,7 +136,7 @@ public class SkolemToCNFConverter {
 			}
 
 		} else if (lf instanceof RelationFormula && rf instanceof Conjunction) {
-			
+
 		} else if (rf instanceof RelationFormula && lf instanceof Conjunction) {
 
 		}

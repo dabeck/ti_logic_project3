@@ -5,7 +5,7 @@ import java.util.Vector;
 public class Signature extends Vector<FunctionSymbol> {
 
     public Signature() {
-	super();
+	    super();
     }
 }
 
