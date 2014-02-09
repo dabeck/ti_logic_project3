@@ -115,17 +115,17 @@ public class SkolemToCNFConverter {
 			String rightConjOfRightDisjName = rightConjOfRightDisj.getName();
 
 			//Check if (F ^ G) v (F ^ H)?
-			if (leftConjOfLeftDisjName.euqals(leftConjOfRightDisjName))
+			if (leftConjOfLeftDisjName.equals(leftConjOfRightDisjName))
 			{
 				newReplacementJunctor = distributionOne(leftConjOfLeftDisj, rightConjOfLeftDisj, rightConjOfRightDisj);
 			}
 			//Check if (F ^ G) v (H ^ F)?
-			else if (leftConjOfLeftDisjName.euqals(rightConjOfRightDisj))
+			else if (leftConjOfLeftDisjName.equals(rightConjOfRightDisj))
 			{
 				newReplacementJunctor = distributionOne(leftConjOfLeftDisj, rightConjOfLeftDisj, leftConjOfRightDisj);
 			}
 			//Check if (G ^ F) v (F ^ H)?
-			else if (rightConjOfLeftDisjName.euqals(leftConjOfRightDisjName))
+			else if (rightConjOfLeftDisjName.equals(leftConjOfRightDisjName))
 			{
 				newReplacementJunctor = distributionOne(rightConjOfLeftDisj, leftConjOfRightDisj, rightConjOfRightDisj);
 			}
@@ -136,7 +136,7 @@ public class SkolemToCNFConverter {
 			}
 
 		} else if (lf instanceof RelationFormula && rf instanceof Conjunction) {
-			
+
 		} else if (rf instanceof RelationFormula && lf instanceof Conjunction) {
 
 		}
