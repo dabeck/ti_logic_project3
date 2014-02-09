@@ -1,7 +1,9 @@
 package de.unikassel.ti.logic.project3.tests;
 
-import java.io.InputStreamReader;
 import java.io.StringReader;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import de.unikassel.ti.logic.project3.Scanner;
 import de.unikassel.ti.logic.project3.parser;
@@ -10,36 +12,40 @@ import de.unikassel.ti.logic.project3.model.Formula;
 
 public class SkolemConverterTest {
 
-	public static void main(String[] args) {
-		int chosenTestExample = 1;
+	@Test
+	public void testFormula1() {
+		parser p = new parser(new Scanner(new StringReader(
+		        "EXISTS x ( EXISTS y ( FORALL w ( EXISTS z ( P(f(x), y, g(f(g(w)))) | Q(z, x) ) ) ) )")));
 		Formula f = null;
-		parser p;
-		
-		switch (chosenTestExample) {
-		case 0:
-			p = new parser(new Scanner(new StringReader("EXISTS x ( EXISTS y ( FORALL w ( EXISTS z ( P(f(x), y, g(f(g(w)))) | Q(z, x) ) ) ) )")));
-			break;
-		case 1:
-			p = new parser(new Scanner(new StringReader("EXISTS x ( FORALL y ( EXISTS z ( FORALL u ( EXISTS v ( EXISTS w ( P(x, y, z, u, v, w) ) ) ) ) ) )")));
-			break;
-		default:
-			p = new parser(new Scanner(new InputStreamReader(System.in)));
-		}
-	    
-		try {
-		    f = (Formula) p.parse().value;
-		    System.out.println("Input:\n" + f.toString());
 
-		    // TODO: replace null with PrenexConverter.getVariables()
-		    f = SkolemConverter.convert(f, null);
-		    
-		    System.out.println("\nFormula in Skolem normal form:\n" + f.toString());
-		}	    
-		catch (Exception e) {
-		    System.out.println("Something went seriously wrong:\n" + e.getMessage());
-		    e.printStackTrace();
-		    // if the formula cannot be parsed, no further steps are neccessary
+		try {
+			f = (Formula) p.parse().value;
+			f = SkolemConverter.convert(f);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		System.out.println(f.toString());
+		Assert.assertEquals(
+				"FORALL w (P(f(c0),c1,g(f(g(w)))) | Q(f0(w),c0))",
+				f.toString());
+	}
+	
+	@Test
+	public void testFormula2() {
+		parser p = new parser(new Scanner(new StringReader(
+		        "EXISTS x ( FORALL y ( EXISTS z ( FORALL u ( EXISTS v ( EXISTS w ( P(x, y, z, u, v, w) ) ) ) ) ) )")));
+		Formula f = null;
+
+		try {
+			f = (Formula) p.parse().value;
+			f = SkolemConverter.convert(f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(f.toString());
+		Assert.assertEquals(
+				"FORALL y FORALL u P(c2,y,f1(y),u,f2(y,u),f3(y,u))",
+				f.toString());
 	}
 
 }

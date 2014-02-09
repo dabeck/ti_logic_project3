@@ -18,12 +18,12 @@ import de.unikassel.ti.logic.project3.model.Term;
 public class SkolemConverter {
 
 	/**
-	 * List of all FORALL variables.
+	 * List of all FORALL variables in the given formula.
 	 */
 	private static ArrayList<String> replForall = new ArrayList<String>();
 	
 	/**
-	 * 
+	 * Get the list of all FORALL variables in the given formula.
 	 * @return
 	 */
 	public static ArrayList<String> getReplForall() {
@@ -31,7 +31,7 @@ public class SkolemConverter {
 	}
 
 	/**
-	 * 
+	 * Set the list of all FORALL variables in the given formula.
 	 * @param replForall
 	 */
 	public static void setReplForall(ArrayList<String> replForall) {
@@ -44,7 +44,7 @@ public class SkolemConverter {
 	private static HashMap<String, Term> replExist = new HashMap<String, Term>();
 	
 	/**
-	 * 
+	 * Get the list of all EXISTS variables and their corresponding replacement-term.
 	 * @return
 	 */
 	public static HashMap<String, Term> getReplExist() {
@@ -52,7 +52,7 @@ public class SkolemConverter {
 	}
 
 	/**
-	 * 
+	 * Set the list of all EXISTS variables and their corresponding replacement-term.
 	 * @param replExist
 	 */
 	public static void setReplExist(HashMap<String, Term> replExist) {
@@ -65,25 +65,62 @@ public class SkolemConverter {
 	private static ArrayList<String> variables = new ArrayList<String>();
 	
 	/**
-	 * 
+	 * Get the list of all variables in the formula
+	 * @return
+	 */
+	public static ArrayList<String> getVariables() {
+		return variables;
+	}
+
+	/**
+	 * Set the list of all variables in the formula
+	 * @param variables
+	 */
+	public static void setVariables(ArrayList<String> variables) {
+		SkolemConverter.variables = variables;
+	}
+
+	/**
+	 * List of all functionSymbols in the given formula.
 	 */
 	private static ArrayList<String> functionSymbols = new ArrayList<String>();
 	
+	/**
+	 * Get the list of all functionSymbols in the given formula.
+	 * @return
+	 */
+	public static ArrayList<String> getFunctionSymbols() {
+		return functionSymbols;
+	}
+
+	/**
+	 * Set the list of all functionSymbols in the given formula.
+	 * @param functionSymbols
+	 */
+	public static void setFunctionSymbols(ArrayList<String> functionSymbols) {
+		SkolemConverter.functionSymbols = functionSymbols;
+	}
+
+	/**
+	 * Unique Symbol Factory, to generate unique constants, variables, functions.
+	 */
 	private static UniqueSymbolFactory varfac = null;
 	
 	/**
-	 * 
+	 * Converts a given formula (must be in PrenexForm) to SkolemForm.
 	 * @param f
-	 * @return
+	 * 				The formula (must be in PrenexForm) to convert.
+	 * @return The formula in SkolemForm.
 	 */
-	public static Formula convert(Formula f, ArrayList<String> v) {
+	public static Formula convert(Formula f) {
 		varfac  = UniqueSymbolFactory.getFactoryInstance();
 		
-		// TODO: replace when PrenexConverter is ready
-		// Initialize list of variables of the given formula.
-		collectVariables(f);
-		//variables = v;
+		// If there is no list of variables, collect them.
+		if (variables.size() == 0) {
+			collectVariables(f);
+		}
 		
+		// If there's still no list, there must be an error in the formula.
 		if (variables.size() == 0) {
 			throw new UnsupportedOperationException(
 					"Cannot collect the variable names of the given formula in SkolemConverter.convert() : " + 
@@ -102,16 +139,20 @@ public class SkolemConverter {
 		return result;
 	}
 	
+	/**
+	 * Collect all variable names, if they are not given by previous conversion step.
+	 * @param f The formula, from which the variables should be collected.
+	 */
 	private static void collectVariables(Formula f) {
 		if (f instanceof ExistsQuantification) {
 			ExistsQuantification ex = ((ExistsQuantification) f);
-			if (!variablesContains(ex.getVariable())) {
+			if (!variables.contains(ex.getVariable())) {
 				variables.add(ex.getVariable());
 			}
 			collectVariables(ex.getArg());
 		} else if (f instanceof ForallQuantification) {
 			ForallQuantification fa = ((ForallQuantification) f);
-			if (!variablesContains(fa.getVariable())) {
+			if (!variables.contains(fa.getVariable())) {
 				variables.add(fa.getVariable());
 			}
 			collectVariables(fa.getArg());
@@ -129,12 +170,6 @@ public class SkolemConverter {
 		} else if (f instanceof RelationFormula) {
 			RelationFormula rf = ((RelationFormula) f);
 			for(Term t: rf.getTerms()) {
-				/*if (t.getSubterms().size() > 0) {
-					String name = t.getTopSymbol().getName();
-					if (!functionSymbols.contains(name)) {
-						functionSymbols.add(name);
-					}
-				}*/
 				collectTerms(t);
 			}
 		} else {
@@ -145,13 +180,13 @@ public class SkolemConverter {
 	}
 	
 	/**
-	 * 
-	 * @param t
+	 * Collect all variable names in the terms and subterms.
+	 * @param t The Term, to check for new unique variable names.
 	 */
 	private static void collectTerms(Term t) {
 		if (t.getSubterms().size() == 0) {
 			String name = t.getTopSymbol().getName();
-			if (!variablesContains(name)) {
+			if (!variables.contains(name)) {
 				variables.add(name);
 			}
 		} else {
@@ -168,9 +203,10 @@ public class SkolemConverter {
 	}
 
 	/**
-	 * 
+	 * Replace all EXISTS quantifications, to convert to SkolemForm.
 	 * @param f
-	 * @return
+	 * 				The formula (must be in PrenexForm) to convert.
+	 * @return The formula in SkolemForm.
 	 */
 	private static Formula replaceExists(Formula f) {
 		if (f instanceof ExistsQuantification) {
@@ -210,10 +246,10 @@ public class SkolemConverter {
 	}
 	
 	/**
-	 * 
-	 * 
+	 * Replace the terms, if their is a corresponding replacement rule.
 	 * @param t
-	 * @return
+	 * 				The term to check for a defined replacement.
+	 * @return The term, whether it is replaced or not.
 	 */
 	private static Term replaceTerms(Term t) {
 		if (t.getSubterms().size() == 0) {
@@ -231,8 +267,8 @@ public class SkolemConverter {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Get a correct replacement term, whether the FORALL list is emtpy or not.
+	 * @return A correct replacement term.
 	 */
 	private static Term getReplacement() {
 		if (replForall.size() == 0) {
@@ -240,7 +276,7 @@ public class SkolemConverter {
 			while (functionSymbols.contains(newConstSymbolString) || variables.contains(newConstSymbolString)) {
 				newConstSymbolString = varfac.getNewFunctionSymbolString();
 			}
-			// insert only in functionSymbol-List, because constant = functionSymbol with arity 0
+			// Insert in functionSymbol-List only, because constant = functionSymbol with arity 0.
 			functionSymbols.add(newConstSymbolString);
 			
 			return new Term(new FunctionSymbol(newConstSymbolString, 0), null);
@@ -258,47 +294,6 @@ public class SkolemConverter {
 			
 			return new Term(new FunctionSymbol(newFunctionSymbolString, replForall.size()), subTerms);
 		}
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	private static String getNewVariableName() {
-		String variable = null;
-		
-		// old random generation of new variable names
-		//Random r = new Random();
-		//do {
-		//	constant = Character.toString((char) (97 + r.nextInt(25)));
-		//} while(variablesContains(constant));
-		
-		for(int i = 0; i != 25; i++) {
-			variable = Character.toString((char) (97 + i));
-			if (!variablesContains(variable)) {
-				break;
-			}
-		}
-		
-		// remember the new variable name for further replacements to prevent duplicates
-		// TODO: initialize the variables-List with the variable names
-		variables.add(variable);
-		
-		return variable;
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 */
-	private static boolean variablesContains(String name) {
-		for (int i = 0; i != variables.size(); i++) {
-			if (name.equals(variables.get(i))) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }
