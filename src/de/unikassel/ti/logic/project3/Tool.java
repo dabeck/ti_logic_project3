@@ -30,7 +30,9 @@ public class Tool {
 		    System.out.println("\nFormula in prenex normal form:\n" + f.toString());
 		    
 		    // 4. convert formula to Skolem normal form. Has to return a formula
-		    Formula transformedToSkolemNF = SkolemConverter.convert(transformedToPrenexNF, PrenexConverter.getVariableList());		    
+		    SkolemConverter.setVariables(PrenexConverter.getVariableList());
+		    Formula transformedToSkolemNF = SkolemConverter.convert(transformedToPrenexNF);
+		    
 		    System.out.println("\nFormula in Skolem normal form:\n" + f.toString());
 		    
 		    // 5. Transform to KNF
