@@ -1,5 +1,8 @@
 package de.unikassel.ti.logic.project3.model;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 public class FunctionSymbol {
 	
 	private String name;
@@ -25,8 +28,9 @@ public class FunctionSymbol {
 	public String toString() {
 		return name;
 	}
-	
-	public boolean equals(FunctionSymbol s) {
-		return name.equals(s.getName()) && arity == s.getArity();
+
+    @Override
+	public boolean equals(Object s) {
+		return name.equals(((FunctionSymbol) s).getName()) && arity == ((FunctionSymbol) s).getArity();
 	}
 }
