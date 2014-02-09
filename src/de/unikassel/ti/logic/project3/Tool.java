@@ -4,7 +4,7 @@ import java.io.StringReader;
 
 import de.unikassel.ti.logic.project3.converters.PrenexConverter;
 import de.unikassel.ti.logic.project3.converters.SkolemConverter;
-import de.unikassel.ti.logic.project3.converters.SkolemToKnfConverter;
+import de.unikassel.ti.logic.project3.converters.SkolemToCNFConverter;
 import de.unikassel.ti.logic.project3.model.Formula;
 
 public class Tool {
@@ -36,7 +36,7 @@ public class Tool {
 		    System.out.println("\nFormula in Skolem normal form:\n" + f.toString());
 		    
 		    // 5. Transform to KNF
-		    Formula transformedToKnf = SkolemToKnfConverter.convert(transformedToSkolemNF);
+		    Formula transformedToKnf = SkolemToCNFConverter.convert(transformedToSkolemNF);
 		    System.out.println("\nFormula in KNF:\n" + f.toString());
 		    
 		    // 6. create signature
