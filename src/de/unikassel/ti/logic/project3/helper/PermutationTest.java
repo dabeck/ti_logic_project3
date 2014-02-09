@@ -1,44 +1,19 @@
 package de.unikassel.ti.logic.project3.helper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class PermutationTest {
 
-	private static ArrayList<ArrayList<Integer>> permutations = new ArrayList<ArrayList<Integer>>();
-	
-	public static void main(String[] args) {
-		ArrayList<Integer> termIndices = new ArrayList<Integer>(Arrays.asList(new Integer[] { 0, 1, 2 }));
-		int numberOfVariables = 7;
+	@Test
+	public void test() {
 		
-		permute(termIndices, numberOfVariables, "");
-		System.out.println(permutations.toString());
+		ArrayList<ArrayList<Integer>> p = PermutationGenerator.permute(2);
+		
+		System.out.println(p.toString());
+		
+		Assert.assertEquals("[[0, 0], [0, 1], [1, 0], [1, 1]]",p.toString());
 	}
-	
-	/**
-	 * 
-	 * 
-	 * @see http://stackoverflow.com/questions/13157656/permutation-of-an-array-with-repetition-in-java
-	 * 
-	 * @param termIndices
-	 * @param n
-	 * @param start
-	 */
-	private static void permute(ArrayList<Integer> termIndices, int numberOfVariables, String start){
-		if (start.length() >= numberOfVariables) {
-			char[] charArray = start.toCharArray();
-			ArrayList<Integer> arrayList = new ArrayList<Integer>();
-			for (int i = 0; i != numberOfVariables; i++) {
-				arrayList.add(Integer.parseInt(String.valueOf(charArray[i])));
-			}
-			if (!permutations.contains(arrayList)) {
-				permutations.add(arrayList);
-			}
-		} else {
-			for (Integer x : termIndices) {
-				permute(termIndices, numberOfVariables, start + x);
-			}
-		}
-	}
-
 }
