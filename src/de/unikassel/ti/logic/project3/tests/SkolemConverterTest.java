@@ -67,7 +67,8 @@ public class SkolemConverterTest {
 
 
     // Distributive Property:
-    // Rule of replacement 1
+    // Rule of replacement 1,
+    // where 'string' must be converted to 'output'
     @Test public void testFormula4() {
 
         final String string = "P(x) | (Q(y) & R(z))";
@@ -90,7 +91,8 @@ public class SkolemConverterTest {
 
 
     // Distributive Property:
-    // Rule of replacement 2
+    // Rule of replacement 2,
+    // where 'string' must be converted to 'output'
     @Test public void testFormula5() {
 
         final String string = "(P(x) & Q(y)) | (P(x) & R(z))";
