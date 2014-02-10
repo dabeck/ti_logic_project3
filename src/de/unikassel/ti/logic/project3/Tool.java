@@ -45,9 +45,11 @@ public class Tool {
 		    ArrayList<Formula> formulasExpanded = new ArrayList<>();
 
 		    HerbrandExpander he = new HerbrandExpander(transformedToSkolemNF);
+		    Gilmore gilmore = new Gilmore();
 		    
 		    while (true/*he.hasNext()*/) {
 		    	Formula next = he.getNext();
+		    	formulasExpanded.add(next);
 		    }
 		    
 		}	    
