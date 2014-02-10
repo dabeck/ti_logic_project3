@@ -15,6 +15,15 @@ public abstract class Formula {
     // has renamed all unbound variables.
     public abstract Formula transformToPrenexNF();
 
+	public Formula getLeftArg()
+	{
+		return null;
+	}
+
+	public Formula getRightArg()
+	{
+		return null;
+	}
 
     public String toString() {
 	    return toString(new StringBuffer()).toString();
