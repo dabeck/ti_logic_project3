@@ -1,19 +1,12 @@
 package de.unikassel.ti.logic.project3.herbrand;
 
-import java.text.Normalizer.Form;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.sat4j.minisat.SolverFactory;
+import org.sat4j.specs.ISolver;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableBiMap;
-
-import org.sat4j.core.VecInt;
-import org.sat4j.minisat.SolverFactory;
-import org.sat4j.specs.ContradictionException;
-import org.sat4j.specs.ISolver;
 
 import de.unikassel.ti.logic.project3.model.Conjunction;
 import de.unikassel.ti.logic.project3.model.Disjunction;
@@ -147,8 +140,8 @@ public class Gilmore {
                     continue;
                 } else {
                     int z  = counter;
-                    // check if negated
-                    if (false) {
+                    // check if the formula is negated
+                    if (formula.getClass().equals(Negation.class)) {
                         z *= -1;
                     }
                     valueToKey.put(formula, z);
@@ -156,30 +149,14 @@ public class Gilmore {
                 }
             }
         }
-//        valueToKey = ImmutableBiMap.copyOf(Collections.unmodifiableMap(solverMap));
     }
 
 
     // This function returns a formula for a specified key.
     public Formula getKeyOfValue(final Integer value) {
-//        System.out.println("The key of value " + value + " is " +
-//                (valueToKey.containsValue(value) ? valueToKey.inverse().get(value) : "not present") + ".");
         return (valueToKey.containsValue(value) ? valueToKey.inverse().get(value) : null);
     }
 
 
-	public static void test() {
-		
-		int[] lits = null;
-		VecInt arg0 = new VecInt(lits); 
-		try {
-			solver.addClause(arg0);
-		} catch (ContradictionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
 	
 }
