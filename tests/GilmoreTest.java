@@ -1,5 +1,3 @@
-package de.unikassel.ti.logic.project3.tests;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import de.unikassel.ti.logic.project3.Scanner;
