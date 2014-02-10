@@ -4,20 +4,26 @@ import java.util.ArrayList;
 
 public class PermutationGenerator {
 
-	private static ArrayList<Integer> termIndices = new ArrayList<Integer>();
-	private static ArrayList<ArrayList<Integer>> permutations = new ArrayList<ArrayList<Integer>>();
+	private ArrayList<Integer> termIndices = new ArrayList<Integer>();
+	private ArrayList<ArrayList<Integer>> permutations = new ArrayList<ArrayList<Integer>>();
 	
-	public static ArrayList<ArrayList<Integer>> permute(int numberOfVariables) {
+	/**
+	 * 
+	 * @param numberOfVariables
+	 */
+	public PermutationGenerator (int numberOfVariables) {
 		// Initialize termIndices List.
 		initTermIndices(numberOfVariables);
 		
-		// Generate permutation.
-		permute(numberOfVariables, "");
-		
-		return permutations;
+		this.permutations = new ArrayList<ArrayList<Integer>>();
 	}
 
-	public static void permute(int numberOfVariables, String start) {
+	/**
+	 * 
+	 * @param numberOfVariables
+	 * @param start
+	 */
+	private void permute(int numberOfVariables, String start) {
 		if (start.length() >= numberOfVariables) {
 			char[] charArray = start.toCharArray();
 			ArrayList<Integer> arrayList = new ArrayList<Integer>();
@@ -34,13 +40,27 @@ public class PermutationGenerator {
 		}
 	}
 	
-	private static void initTermIndices(int numberOfVariables) {
+	void initTermIndices(int numberOfVariables) {
 		termIndices.clear();
 		for (int i = 0; i != numberOfVariables; i++) {
 			termIndices.add(i);
 		}
 	}
 	
-	
+	/**
+	 * Get the next permutation of the termIndices.
+	 * 
+	 * TODO: Check if there are permutations left,
+	 * which wasn't used before. Otherwise get the
+	 * next term from the herbrand universe and
+	 * generate new permutations. (Info: Be sure to
+	 * remember already returned permutations, to
+	 * prevent duplicates.)
+	 * 
+	 * @return
+	 */
+	public ArrayList<Integer> getNext() {
+		return null;
+	}
 	
 }
