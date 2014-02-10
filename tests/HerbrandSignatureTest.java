@@ -1,5 +1,3 @@
-package de.unikassel.ti.logic.project3.tests;
-
 import de.unikassel.ti.logic.project3.Scanner;
 import de.unikassel.ti.logic.project3.herbrand.SignatureBuilder;
 import de.unikassel.ti.logic.project3.model.Formula;
