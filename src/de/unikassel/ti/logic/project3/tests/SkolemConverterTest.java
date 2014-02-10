@@ -87,4 +87,27 @@ public class SkolemConverterTest {
         System.out.println("Output: " + fo.toString());
         Assert.assertEquals(output, fo.toString());
     }
+
+
+    // Distributive Property:
+    // Rule of replacement 2
+    @Test public void testFormula5() {
+
+        final String string = "(P(x) & Q(y)) | (P(x) & R(z))";
+        final String output = "P(x) & (Q(y) | R(z))";
+
+        parser p = new parser(new Scanner(new StringReader(string)));
+
+        Formula f =  null;
+        Formula fo = null;
+        try {
+            f = (Formula) p.parse().value;
+            fo = SkolemConverter.convert(f);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Input : " + f.toString());
+        System.out.println("Output: " + fo.toString());
+        Assert.assertEquals(output, fo.toString());
+    }
 }
