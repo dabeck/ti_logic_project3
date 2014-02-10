@@ -1,7 +1,9 @@
 package de.unikassel.ti.logic.project3.herbrand;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import de.unikassel.ti.logic.project3.TermEnumerator;
 import de.unikassel.ti.logic.project3.helper.PermutationGenerator;
 import de.unikassel.ti.logic.project3.model.Conjunction;
 import de.unikassel.ti.logic.project3.model.Disjunction;
@@ -10,6 +12,7 @@ import de.unikassel.ti.logic.project3.model.ForallQuantification;
 import de.unikassel.ti.logic.project3.model.Formula;
 import de.unikassel.ti.logic.project3.model.Negation;
 import de.unikassel.ti.logic.project3.model.RelationFormula;
+import de.unikassel.ti.logic.project3.model.Signature;
 import de.unikassel.ti.logic.project3.model.Term;
 
 public class HerbrandExpander {
@@ -59,13 +62,13 @@ public class HerbrandExpander {
 	/**
 	 * 
 	 */
-	private ArrayList<Integer> replacementRules = new ArrayList<Integer>();
+	private HashMap<String, Term> replacementRules = new HashMap<String, Term>();
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public ArrayList<Integer> getReplacementRules() {
+	public HashMap<String, Term> getReplacementRules() {
 		return replacementRules;
 	}
 
@@ -73,7 +76,7 @@ public class HerbrandExpander {
 	 * 
 	 * @param replacementRules
 	 */
-	public void setReplacementRules(ArrayList<Integer> replacementRules) {
+	public void setReplacementRules(HashMap<String, Term> replacementRules) {
 		this.replacementRules = replacementRules;
 	}
 
@@ -98,13 +101,50 @@ public class HerbrandExpander {
 		this.permutation = permutation;
 	}
 	
+	/**
+	 * 
+	 */
+	private ArrayList<Term> universe;
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<Term> getUniverse() {
+		return universe;
+	}
+
+	/**
+	 * 
+	 * @param universe
+	 */
+	public void setUniverse(ArrayList<Term> universe) {
+		this.universe = universe;
+	}
+	
+	/**
+	 * 
+	 */
+	private TermEnumerator termEnumerator;
+	
 	
 	/**
 	 * HerbrandExpander.
 	 * 
 	 * @param f
+	 * @throws Exception 
 	 */
 	public HerbrandExpander(Formula f) {
+		// Build a signature for our formula and create a termEnumerator with it.
+		Signature s = null;
+		try {
+			s = SignatureBuilder.build(f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.termEnumerator = new TermEnumerator(s);
+		this.setUniverse(new ArrayList<Term>());
+		
 		// If there is no list of variables, collect them.
 		if (variables.size() == 0) {
 			collectVariables(f);
@@ -211,31 +251,99 @@ public class HerbrandExpander {
 	public Formula getNext() {
 		// TODO ...
 		
-		// TODO: create a new Formula-Instance, so that the given Formula stays unchanged
-		// Formula g = new RelationFormula(null, null); // <- just pseudocode, still has to be implemented
+		// Create a new Formula-Instance, so that the given Formula stays unchanged.
+		RelationFormula rf = ((RelationFormula) this.formula);
+		Formula g = new RelationFormula(rf.getName(), rf.getTerms());
 		
-		// get the List with a new permutation of the replacement rules
-		// example: [0, 0, 6, 4] if our formula has 4 variables...
-		// replace the first and second variable with the first term of the universe
-		// replace the third variable with the seventh term of the universe
-		// replace the fourth variable with the fifth term of the universe
-		// replacementRules = permutation.getNext(); // <- this line should work, but the method has to be implemented
+		// Get the List with a new permutation and generate the corresponding replacement rules.
+		// EXAMPLE: [0, 0, 6, 4] if our formula has 4 variables...
+		//  - replace the first and second variable with the first term of the universe
+		//  - replace the third variable with the seventh term of the universe
+		//  - replace the fourth variable with the fifth term of the universe
+		ArrayList<Integer> currentPerm = permutation.getNext();
+		replacementRules.clear();
 		
+		// Run thru our current permutation and generate the corresponding replacement rules.
+		// INFO: i is the variableIndex regarding the formula
+		//       currentPerm.get(i) is the termIndex regarding the universe
+		for (int i = 0; i != currentPerm.size(); i++) {
+			while (currentPerm.get(i) >= universe.size()) {
+				// expand our universe if necessary
+				universe.add(termEnumerator.getNext());
+			}
+			
+			// add rule
+			replacementRules.put(
+					variables.get(i),
+					universe.get(currentPerm.get(i))
+				);
+		}
 		
-		// TODO: execute the replacement here, with the rules of above
-		// replacement();
+		// execute the replacements here, with the rules of above
+		g = replace(g);
 		
 		
 		// return the new generated Formula
-		return null;
+		return g;
 	}
 
 	/**
-	 * TODO: Execute the replacement rules here...
+	 * 
+	 * @param f
+	 * @return
 	 */
-	private void replacement() {
-		// hint: see replacement in SkolemConverter for example
-		// this.replacementRules would be something similar to the SkolemConverter.replExists
+	private Formula replace(Formula f) {
+		if (f instanceof ExistsQuantification) {
+			throw new UnsupportedOperationException(
+					"Formula is not in SkolemForm, in HerbrandExpander.replace() : " + 
+					f.toString());
+		} else if (f instanceof ForallQuantification) {
+			throw new UnsupportedOperationException(
+					"Unexpected Formula in HerbrandExpander.replace() : " + 
+					f.toString());
+		} else if (f instanceof Conjunction) {
+			Conjunction c = ((Conjunction) f);
+			return new Conjunction(replace(c.getLeftArg()), replace(c.getRightArg()));
+		} else if (f instanceof Disjunction) {
+			Disjunction d = ((Disjunction) f);
+			return new Disjunction(replace(d.getLeftArg()), replace(d.getRightArg()));
+		} else if (f instanceof Negation) {
+			Negation n = ((Negation) f);
+			return new Negation(replace(n.getArg()));
+		} else if (f instanceof RelationFormula) {
+			RelationFormula rf = ((RelationFormula) f);
+			
+			for(int i = 0; i != rf.getTerms().size(); i++) {
+				rf.getTerms().set(i, replaceTerms(rf.getTerms().get(i)));
+			}
+			
+			return rf;
+		} else {
+			throw new UnsupportedOperationException(
+					"Unexpected Formula in HerbrandExpander.replace() : " + 
+					f.toString());
+		}
+	}
+	
+	/**
+	 * Replace the terms, if their is a corresponding replacement rule.
+	 * @param t
+	 * 				The term to check for a defined replacement.
+	 * @return The term, whether it is replaced or not.
+	 */
+	private Term replaceTerms(Term t) {
+		if (t.getSubterms().size() == 0) {
+			if (replacementRules.containsKey(t.getTopSymbol().getName())) {
+				return replacementRules.get(t.getTopSymbol().getName());
+			} else {
+				return t;
+			}
+		} else {
+			for(int i = 0; i != t.getSubterms().size(); i++) {
+				t.getSubterms().set(i, replaceTerms(t.getSubterms().get(i)));
+			}
+			return t;
+		}
 	}
 	
 }
