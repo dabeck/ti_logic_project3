@@ -178,4 +178,9 @@ public class SkolemToCNFConverter {
 		return newConj;
 	}
 
+	public static Formula convert(Formula transformedToSkolemNF) {
+		checkForCNF(transformedToSkolemNF);
+		return transformedToSkolemNF;
+	}
+
 }
