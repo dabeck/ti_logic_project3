@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
+import de.unikassel.ti.logic.project3.model.Negation;
 import org.sat4j.core.VecInt;
 import org.sat4j.minisat.SolverFactory;
 import org.sat4j.specs.ContradictionException;
@@ -56,8 +57,8 @@ public class Gilmore {
                     continue;
                 } else {
                     int z  = counter;
-                    // check if negated
-                    if (false) {
+                    // check if the formula is negated
+                    if (formula.getClass().equals(Negation.class)) {
                         z *= -1;
                     }
                     valueToKey.put(formula, z);
