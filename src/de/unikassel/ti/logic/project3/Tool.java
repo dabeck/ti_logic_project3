@@ -12,7 +12,13 @@ import de.unikassel.ti.logic.project3.model.Formula;
 
 /**
  * 
- * @author Felix
+ * Bearbeiter der Aufgabe:
+ * Name								Matrikelnummer
+ * ======================================================
+ * Becker, Daniel						28202534
+ * Beier, Felix							23228869
+ * Kukushkin, Valentyn					26208352
+ * Müller, Peter						30201497
  * 
  *         	Schritte, die durchgeführt werden müssen um eine prädikatenlogischen
  *         	Formel auf Unefüllbarkeit zu prüfen:
@@ -132,9 +138,7 @@ public class Tool {
 			// 6. Herbrand Expansion and Gilmore
 			ArrayList<Formula> formulasExpanded = new ArrayList<Formula>();
 
-			HerbrandExpander he = new HerbrandExpander(transformedToSkolemNF);
-			// HerbrandExpander he = new HerbrandExpander(transformedToCnf);
-			Gilmore gilmore = new Gilmore();
+			HerbrandExpander he = new HerbrandExpander(transformedToCnf);
 
 			while (he.hasNext()) {
 				Formula next = he.getNext();
