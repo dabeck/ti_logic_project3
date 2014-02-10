@@ -1,5 +1,3 @@
-package de.unikassel.ti.logic.project3.tests;
-
 import org.junit.Test;
 
 /**

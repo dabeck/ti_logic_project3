@@ -27,7 +27,7 @@ public class Gilmore {
 		
 		if (f.getClass().equals(Conjunction.class)) {
 			
-			Conjunction con = f;
+		//	Conjunction con = f;
 			
 		}
 		
