@@ -6,8 +6,6 @@ import de.unikassel.ti.logic.project3.model.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import java_cup.runtime.SymbolFactory;
-
 /**
  * Created by Valentyn and Felix on 09.02.2014.
  */
