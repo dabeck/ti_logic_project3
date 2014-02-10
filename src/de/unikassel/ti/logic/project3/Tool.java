@@ -109,13 +109,13 @@ public class Tool {
 			// 2. convert formula to PNF. Has to return a formula
 			Formula transformedToPositiveNF = f.transformToPositiveNF();
 			System.out.println("\nFormula in postive normal form:\n"
-					+ f.toString());
+					+ transformedToPositiveNF.toString());
 
 			// 3. convert formula to prenex normal form. Has to return a formula
 			Formula transformedToPrenexNF = PrenexConverter
 					.convert(transformedToPositiveNF);
 			System.out.println("\nFormula in prenex normal form:\n"
-					+ f.toString());
+					+ transformedToPrenexNF.toString());
 
 			// 4. convert formula to Skolem normal form. Has to return a formula
 			SkolemConverter.setVariables(PrenexConverter.getVariableList());
@@ -123,12 +123,11 @@ public class Tool {
 					.convert(transformedToPrenexNF);
 
 			System.out.println("\nFormula in Skolem normal form:\n"
-					+ f.toString());
+					+ transformedToSkolemNF.toString());
 
 			// 5. Transform to KNF
-			// Formula transformedToCnf =
-			// SkolemToCNFConverter.convert(transformedToSkolemNF);
-			System.out.println("\nFormula in KNF:\n" + f.toString());
+			Formula transformedToCnf = SkolemToCNFConverter.convert(transformedToSkolemNF);
+			System.out.println("\nFormula in KNF:\n" + transformedToCnf.toString());
 
 			// 6. Herbrand Expansion and Gilmore
 			ArrayList<Formula> formulasExpanded = new ArrayList<Formula>();
