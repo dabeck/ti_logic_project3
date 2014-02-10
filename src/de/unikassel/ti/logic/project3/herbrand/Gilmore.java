@@ -1,10 +1,14 @@
 package de.unikassel.ti.logic.project3.herbrand;
 
+import java.util.ArrayList;
+
 import org.sat4j.core.VecInt;
 import org.sat4j.minisat.SolverFactory;
 import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.ISolver;
-import org.sat4j.specs.IVecInt;
+
+import de.unikassel.ti.logic.project3.model.Conjunction;
+import de.unikassel.ti.logic.project3.model.Formula;
 
 public class Gilmore {
 
@@ -17,7 +21,19 @@ public class Gilmore {
 	
 	// TODO: umwandeln der Formel, die HerbrandExpander hergibt, in Klauseln
 	
-	
+	private static ArrayList<ArrayList<Formula>> convertCnfToClauses(Formula f) {
+		
+		ArrayList<ArrayList<Formula>> result = null;
+		
+		if (f.getClass().equals(Conjunction.class)) {
+			
+			Conjunction con = f;
+			
+		}
+		
+		
+		return result;
+	}
 	
 	
 	public static void test() {
