@@ -1,6 +1,7 @@
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import de.unikassel.ti.logic.project3.Scanner;
+import de.unikassel.ti.logic.project3.herbrand.Gilmore;
 import de.unikassel.ti.logic.project3.herbrand.SignatureBuilder;
 import de.unikassel.ti.logic.project3.model.Formula;
 import de.unikassel.ti.logic.project3.model.Signature;
@@ -48,7 +49,7 @@ public class GilmoreTest {
         init.put("A", 1);
         init.put("B", -2);
         init.put("C", 3);
-        init.put("D", 2);
+        init.put("D", 4);
 
         valueToKey = ImmutableBiMap.copyOf(Collections.unmodifiableMap(init));
 
@@ -56,7 +57,11 @@ public class GilmoreTest {
         this.printiKeyOfValue(1);
         this.printiKeyOfValue(3);
         this.printiKeyOfValue(5);
-        this.printiKeyOfValue(2);
+        this.printiKeyOfValue(4);
+    }
+
+    @Test public void gilmoreTest3() {
+
     }
 
     private void printiKeyOfValue(final Integer value) {
