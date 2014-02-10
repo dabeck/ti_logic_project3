@@ -1,12 +1,15 @@
 package de.unikassel.ti.logic.project3.herbrand;
 
+import de.unikassel.ti.logic.project3.factories.UniqueSymbolFactory;
 import de.unikassel.ti.logic.project3.model.*;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
+import java_cup.runtime.SymbolFactory;
+
 /**
- * Created by Valentyn on 09.02.2014.
+ * Created by Valentyn and Felix on 09.02.2014.
  */
 public class SignatureBuilder {
 
@@ -20,6 +23,18 @@ public class SignatureBuilder {
 
         for (FunctionSymbol s : functionSymbols) {
             newSig.add(s);
+        }
+        
+        // there has to be at least one constant
+        if (newSig.isEmpty()) {
+        	
+        	UniqueSymbolFactory factoryInstance = UniqueSymbolFactory.getFactoryInstance();
+        	String newConstSymbolString = factoryInstance.getNewConstSymbolString();
+        	
+        	FunctionSymbol newConstant = new FunctionSymbol(newConstSymbolString, 0);
+        	
+        	newSig.add(newConstant);
+        	
         }
 
         return newSig;
