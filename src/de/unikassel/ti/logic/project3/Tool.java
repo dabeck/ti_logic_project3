@@ -1,6 +1,7 @@
 package de.unikassel.ti.logic.project3;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import de.unikassel.ti.logic.project3.converters.PrenexConverter;
 import de.unikassel.ti.logic.project3.converters.SkolemConverter;
@@ -39,7 +40,13 @@ public class Tool {
 		    Formula transformedToKnf = SkolemToCNFConverter.convert(transformedToSkolemNF);
 		    System.out.println("\nFormula in KNF:\n" + f.toString());
 		    
-		    // 6. create signature
+		    // 6. Herbrand Expansion and Gilmore
+		    ArrayList<Formula> formulasExpanded = new ArrayList<>();
+		    
+		    
+		    
+		    
+		    
 		    
 		}	    
 		catch (Exception e) {
