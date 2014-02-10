@@ -1,6 +1,7 @@
 package de.unikassel.ti.logic.project3.tests;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,4 +49,22 @@ public class SkolemConverterTest {
 				f.toString());
 	}
 
+
+	@Test
+	public void testFormula3() {
+		parser p = new parser(new Scanner(new StringReader(
+		        "- EXISTS x ( R(f(x), g(h(c,x))) & -P(f(f(d))))")));
+		Formula f = null;
+
+		try {
+			f = (Formula) p.parse().value;
+			f = SkolemConverter.convert(f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(f.toString());
+		Assert.assertEquals(
+				"-(R(f(c3),g(h(c,c3))) & -P(f(f(d))))",
+				f.toString());
+	}
 }

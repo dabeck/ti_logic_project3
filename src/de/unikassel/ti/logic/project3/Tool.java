@@ -88,7 +88,6 @@ public class Tool {
 			}
 
 			cmdLineFormula = sb.toString();
-
 		}
 		
 		String stringToParse = FORMULA;
@@ -99,7 +98,7 @@ public class Tool {
 		
 		// parser p = new parser(new Scanner(new InputStreamReader(System.in)));
 		parser p = new parser(new Scanner(new StringReader(
-				FORMULA)));
+				stringToParse)));
 		Formula f = null;
 
 		// 1. parse formula

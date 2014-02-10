@@ -88,7 +88,7 @@ public class SignatureBuilder {
     }
 
     private static void collectFunctionSymbols(Term t) {
-        if (t.getSubterms().size() > 0) {
+        if (t.getSubterms() != null && t.getSubterms().size() > 0) {
             for (Term st : t.getSubterms()) {
                 final FunctionSymbol topSymbol = st.getTopSymbol();
                 if (!functionSymbols.contains(topSymbol)) {
