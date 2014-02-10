@@ -178,8 +178,7 @@ public class PrenexConverter {
         // IMPORTANT: after existence conclusion, the next operation has to be performed on the new "root"!!!!!!
         Formula transformedToPrenexNF = root.transformToPrenexNF();
 
-//		return transformedToPrenexNF;
-        return root;
+		return transformedToPrenexNF;
     }
 
     public static ArrayList<String> getVariableList() {

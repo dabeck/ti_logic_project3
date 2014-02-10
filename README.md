@@ -3,6 +3,12 @@ ti_logic_project3
 
 TI Logik Projektaufgabe 3 (WS13/14)
 
+Hallo Korrekteure!
+Die Klasse "Tool" ist der Einstiegspunkt. Dort wird das Vorgehen beschrieben.
+
+
+
+Das ist für uns:
 Vorgehensweise:
   1. Formel einlesen - OK
   2. Formel in positive Normalform umwandeln - OK

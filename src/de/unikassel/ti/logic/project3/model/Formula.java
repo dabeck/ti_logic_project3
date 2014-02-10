@@ -8,12 +8,13 @@ public abstract class Formula {
     // Rebuilds the AST (in the manner of composite design pattern)
     // into a 'Positive Normal Form' and returns the newly built AST.
     public abstract Formula transformToPositiveNF();
-
+    
     // Rebuilds the AST (in the manner of composite design pattern)
     // into a Prenex Normal Form' and returns the newly built AST.
     // Warning: This operation can only be performed after the 'PenexConverter'
     // has renamed all unbound variables.
     public abstract Formula transformToPrenexNF();
+
 
     public String toString() {
 	    return toString(new StringBuffer()).toString();
