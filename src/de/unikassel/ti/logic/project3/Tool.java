@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import de.unikassel.ti.logic.project3.converters.PrenexConverter;
 import de.unikassel.ti.logic.project3.converters.SkolemConverter;
 import de.unikassel.ti.logic.project3.converters.SkolemToCNFConverter;
+import de.unikassel.ti.logic.project3.herbrand.HerbrandExpander;
 import de.unikassel.ti.logic.project3.model.Formula;
 
 public class Tool {
@@ -37,16 +38,17 @@ public class Tool {
 		    System.out.println("\nFormula in Skolem normal form:\n" + f.toString());
 		    
 		    // 5. Transform to KNF
-		    Formula transformedToKnf = SkolemToCNFConverter.convert(transformedToSkolemNF);
+		    //Formula transformedToKnf = SkolemToCNFConverter.convert(transformedToSkolemNF);
 		    System.out.println("\nFormula in KNF:\n" + f.toString());
 		    
 		    // 6. Herbrand Expansion and Gilmore
 		    ArrayList<Formula> formulasExpanded = new ArrayList<>();
+
+		    HerbrandExpander he = new HerbrandExpander(transformedToSkolemNF);
 		    
-		    
-		    
-		    
-		    
+		    while (true/*he.hasNext()*/) {
+		    	Formula next = he.getNext();
+		    }
 		    
 		}	    
 		catch (Exception e) {

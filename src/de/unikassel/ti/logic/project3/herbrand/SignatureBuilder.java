@@ -13,7 +13,7 @@ import java_cup.runtime.SymbolFactory;
  */
 public class SignatureBuilder {
 
-    private static ArrayList<FunctionSymbol> functionSymbols = new ArrayList<>();
+    private static ArrayList<FunctionSymbol> functionSymbols = new ArrayList<FunctionSymbol>();
 
     public static Signature build(Formula f) throws Exception {
 
