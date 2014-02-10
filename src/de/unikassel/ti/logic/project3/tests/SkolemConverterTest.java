@@ -26,9 +26,7 @@ public class SkolemConverterTest {
 			e.printStackTrace();
 		}
 		System.out.println(f.toString());
-		Assert.assertEquals(
-				"FORALL w (P(f(c0),c1,g(f(g(w)))) | Q(f0(w),c0))",
-				f.toString());
+		Assert.assertEquals("FORALL w (P(f(c0),c1,g(f(g(w)))) | Q(f0(w),c0))", f.toString());
 	}
 	
 	@Test
@@ -44,10 +42,9 @@ public class SkolemConverterTest {
 			e.printStackTrace();
 		}
 		System.out.println(f.toString());
-		Assert.assertEquals(
-				"FORALL y FORALL u P(c2,y,f1(y),u,f2(y,u),f3(y,u))",
-				f.toString());
+		Assert.assertEquals("FORALL y FORALL u P(c2,y,f1(y),u,f2(y,u),f3(y,u))", f.toString());
 	}
+
 
 
 	@Test
@@ -67,4 +64,50 @@ public class SkolemConverterTest {
 				"-(R(f(c3),g(h(c,c3))) & -P(f(f(d))))",
 				f.toString());
 	}
+
+
+    // Distributive Property:
+    // Rule of replacement 1
+    @Test public void testFormula4() {
+
+        final String string = "P(x) | (Q(y) & R(z))";
+        final String output = "(P(x) | Q(y)) & (P(x) | R(z))";
+
+        parser p = new parser(new Scanner(new StringReader(string)));
+
+        Formula f =  null;
+        Formula fo = null;
+        try {
+            f = (Formula) p.parse().value;
+            fo = SkolemConverter.convert(f);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Input : " + f.toString());
+        System.out.println("Output: " + fo.toString());
+        Assert.assertEquals(output, fo.toString());
+    }
+
+
+    // Distributive Property:
+    // Rule of replacement 2
+    @Test public void testFormula5() {
+
+        final String string = "(P(x) & Q(y)) | (P(x) & R(z))";
+        final String output = "P(x) & (Q(y) | R(z))";
+
+        parser p = new parser(new Scanner(new StringReader(string)));
+
+        Formula f =  null;
+        Formula fo = null;
+        try {
+            f = (Formula) p.parse().value;
+            fo = SkolemConverter.convert(f);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Input : " + f.toString());
+        System.out.println("Output: " + fo.toString());
+        Assert.assertEquals(output, fo.toString());
+    }
 }
