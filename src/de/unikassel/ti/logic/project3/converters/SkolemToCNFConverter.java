@@ -4,183 +4,233 @@ import de.unikassel.ti.logic.project3.model.*;
 
 public class SkolemToCNFConverter {
 
-    private static boolean checkForCNF(Formula f) {
-        if (f instanceof ExistsQuantification) {
-			checkForCNF(((ExistsQuantification) f).getArg());
-        } else if (f instanceof ForallQuantification) {
-			checkForCNF(((ForallQuantification) f).getArg());
-        } else if (f instanceof Disjunction) {
-            Formula lf = ((Disjunction) f).getLeftArg();
-            Formula rf = ((Disjunction) f).getRightArg();
+ 	private static Formula convertToCNF(Formula f) {
 
-			applyDistributionIfPossible(f);
+		// A
+		if (f instanceof RelationFormula)
+		{
+			return f;
+		}
 
-			Boolean lfIsCNF = checkForCNF(lf);
-			Boolean rfIsCNF = checkForCNF(rf);
-
-			if (lfIsCNF && rfIsCNF) {
-				return true;
+		if (f instanceof Negation)
+		{
+			Formula nfArg = ((Negation) f).getArg();
+			// -A
+			if (nfArg instanceof RelationFormula)
+			{
+				return f;
 			}
-
-			if (lfIsCNF && rf instanceof Disjunction ||
-				rfIsCNF && lf instanceof Disjunction) {
-				return true;
-			} //end of disjunction
-        } else if (f instanceof Conjunction) {
-			Formula lf = ((Conjunction) f).getLeftArg();
-			Formula rf = ((Conjunction) f).getRightArg();
-
-			if (lf instanceof RelationFormula && rf instanceof RelationFormula) {
-				return true;
+			// -(-A)
+			else if (nfArg instanceof Negation)
+			{
+				return convertToCNF(((Negation) nfArg).getArg());
 			}
-
-			if (lf instanceof Conjunction && rf instanceof Conjunction) {
-				return true;
+			// E(A)
+			else if (nfArg instanceof ExistsQuantification)
+			{
+				return convertToCNF(((Negation) nfArg).getArg());
 			}
-
-			if (lf instanceof Conjunction && rf instanceof Disjunction ||
-				rf instanceof Conjunction && lf instanceof Disjunction) {
-				return true;
+			// FA(A)
+			else if (nfArg instanceof ForallQuantification)
+			{
+				return convertToCNF(((Negation) nfArg).getArg());
 			}
-
-			if (checkForCNF(lf) && checkForCNF(rf)) {
-				return true;
+			// -( & )
+			else if (nfArg instanceof Conjunction)
+			{
+				return new Disjunction(new Negation(((Conjunction) nfArg).getLeftArg()), new Negation(((Conjunction) nfArg).getRightArg()));
 			}
-		} else if (f instanceof Negation) {
-				Negation nf = (Negation) f;
-				checkForCNF(nf.getArg());
-		} else if (f instanceof RelationFormula) {
-			return true;
+			// -( | )
+			else if (nfArg instanceof Disjunction)
+			{
+				return new Conjunction(new Negation(((Disjunction) nfArg).getLeftArg()), new Negation(((Disjunction) nfArg).getRightArg()));
+			}
+			// -(...)
+			else
+			{
+				return convertToCNF(nfArg);
+			}
 		}
 
 
-        return false;
-    }
-
-	private static Formula applyDistributionIfPossible (Formula f) {
-		Disjunction df = (Disjunction)f;
-		Formula newReplacementJunctor = null;
-
-		//Check if first law is applicable
-		Formula lf = df.getLeftArg();
-		Formula rf = df.getRightArg();
-
-		if (lf instanceof Conjunction && rf instanceof Conjunction) {
-			Formula leftleft = ((Conjunction) lf).getLeftArg();
-			Formula rightleft = ((Conjunction) lf).getRightArg();
-			Formula leftright = ((Conjunction) rf).getLeftArg();
-			Formula rightright = ((Conjunction) rf).getRightArg();
-
-			RelationFormula leftConjOfLeftDisj = null,
-							rightConjOfLeftDisj = null,
-							leftConjOfRightDisj = null,
-							rightConjOfRightDisj = null;
-
-			if (leftleft instanceof RelationFormula) {
-				leftConjOfLeftDisj = (RelationFormula)leftleft;
-			} else {
-				//TODO: ...
-			}
-
-
-			if (rightleft instanceof RelationFormula) {
-				rightConjOfLeftDisj = (RelationFormula)rightleft;
-			} else {
-				//TODO: ...
-			}
-
-			if (leftright instanceof RelationFormula) {
-				leftConjOfRightDisj = (RelationFormula)leftright;
-			} else {
-				//TODO: ...
-			}
-
-			if (rightright instanceof RelationFormula) {
-				rightConjOfRightDisj = (RelationFormula)rightright;
-			} else {
-				//TODO: ...
-			}
-
-			//Check if 'F' exists in both discjunctions
-			if (leftConjOfLeftDisj == null ||
-				leftConjOfRightDisj == null ||
-				rightConjOfLeftDisj == null ||
-				rightConjOfRightDisj == null) {
-				//TODO: ...
-			}
-
-			String leftConjOfLeftDisjName = leftConjOfLeftDisj.getName();
-			String leftConjOfRightDisjName = leftConjOfRightDisj.getName();
-			String rightConjOfLeftDisjName = rightConjOfLeftDisj.getName();
-			String rightConjOfRightDisjName = rightConjOfRightDisj.getName();
-
-			//Check if (F ^ G) v (F ^ H)?
-			if (leftConjOfLeftDisjName.equals(leftConjOfRightDisjName))
+		if (f instanceof ExistsQuantification)
+		{
+			Formula nfArg = ((ExistsQuantification) f).getArg();
+			// -A
+			if (nfArg instanceof RelationFormula)
 			{
-				newReplacementJunctor = distributionOne(leftConjOfLeftDisj, rightConjOfLeftDisj, rightConjOfRightDisj);
+				return f;
 			}
-			//Check if (F ^ G) v (H ^ F)?
-			else if (leftConjOfLeftDisjName.equals(rightConjOfRightDisj))
+			// -(-A)
+			else if (nfArg instanceof Negation)
 			{
-				newReplacementJunctor = distributionOne(leftConjOfLeftDisj, rightConjOfLeftDisj, leftConjOfRightDisj);
+				return convertToCNF(((Negation) nfArg).getArg());
 			}
-			//Check if (G ^ F) v (F ^ H)?
-			else if (rightConjOfLeftDisjName.equals(leftConjOfRightDisjName))
+			// E(A)
+			else if (nfArg instanceof ExistsQuantification)
 			{
-				newReplacementJunctor = distributionOne(rightConjOfLeftDisj, leftConjOfRightDisj, rightConjOfRightDisj);
+				return convertToCNF(((Negation) nfArg).getArg());
 			}
-			//Check if (G ^ F) v (H ^ F)?
-			else if (rightConjOfLeftDisjName.equals(rightConjOfRightDisjName))
+			// FA(A)
+			else if (nfArg instanceof ForallQuantification)
 			{
-				newReplacementJunctor = distributionOne(rightConjOfLeftDisj, leftConjOfRightDisj, leftConjOfRightDisj);
+				return convertToCNF(((Negation) nfArg).getArg());
 			}
-
-		} else if (lf instanceof RelationFormula && rf instanceof Conjunction) {
-
-		} else if (rf instanceof RelationFormula && lf instanceof Conjunction) {
-
+			// -( & )
+			else if (nfArg instanceof Conjunction)
+			{
+				return new Disjunction(new Negation(((Conjunction) nfArg).getLeftArg()), new Negation(((Conjunction) nfArg).getRightArg()));
+			}
+			// -( | )
+			else if (nfArg instanceof Disjunction)
+			{
+				return new Conjunction(new Negation(((Disjunction) nfArg).getLeftArg()), new Negation(((Disjunction) nfArg).getRightArg()));
+			}
+			// -(...)
+			else
+			{
+				return convertToCNF(nfArg);
+			}
 		}
 
+		if (f instanceof ForallQuantification)
+		{
+			Formula nfArg = ((ForallQuantification) f).getArg();
+			// -A
+			if (nfArg instanceof RelationFormula)
+			{
+				return f;
+			}
+			// -(-A)
+			else if (nfArg instanceof Negation)
+			{
+				return convertToCNF(((Negation) nfArg).getArg());
+			}
+			// E(A)
+			else if (nfArg instanceof ExistsQuantification)
+			{
+				return convertToCNF(((Negation) nfArg).getArg());
+			}
+			// FA(A)
+			else if (nfArg instanceof ForallQuantification)
+			{
+				return convertToCNF(((Negation) nfArg).getArg());
+			}
+			// -( & )
+			else if (nfArg instanceof Conjunction)
+			{
+				return new Disjunction(new Negation(((Conjunction) nfArg).getLeftArg()), new Negation(((Conjunction) nfArg).getRightArg()));
+			}
+			// -( | )
+			else if (nfArg instanceof Disjunction)
+			{
+				return new Conjunction(new Negation(((Disjunction) nfArg).getLeftArg()), new Negation(((Disjunction) nfArg).getRightArg()));
+			}
+			// -(...)
+			else
+			{
+				return convertToCNF(nfArg);
+			}
+		}
+
+		Formula cnfLeft = convertToCNF(f.getLeftArg()), cnfRight = convertToCNF(f.getRightArg());
+
+		if (f instanceof Conjunction)
+		{
+			return new Conjunction(cnfLeft, cnfRight);
+		}
+
+		if (f instanceof Disjunction)
+		{
+
+			//   |
+			// |   |
+			if (
+					(cnfLeft instanceof Negation || cnfLeft instanceof RelationFormula || cnfLeft instanceof Disjunction) &&
+							(cnfRight instanceof Negation || cnfRight instanceof RelationFormula || cnfRight instanceof Disjunction)
+					)
+			{
+				return new Disjunction(cnfLeft, cnfRight);
+			}
+
+
+			//   |
+			// &   |
+			else if (
+					(cnfLeft instanceof Conjunction) &&
+							(cnfRight instanceof Negation || cnfRight instanceof RelationFormula || cnfRight instanceof Disjunction)
+					)
+			{
+				Formula newL = new Disjunction(cnfLeft.getLeftArg(), cnfRight);
+				Formula newR = new Disjunction(cnfLeft.getRightArg(), cnfRight);
+
+				return new Conjunction(convertToCNF(newL), convert(newR));
+			}
+
+			//   |
+			// |   &
+			else if (
+					(cnfLeft instanceof Negation || cnfLeft instanceof RelationFormula || cnfLeft instanceof Disjunction) &&
+							(cnfRight instanceof Conjunction)
+					)
+			{
+				Formula newL = new Disjunction(cnfLeft, cnfRight.getRightArg());
+				Formula newR = new Disjunction(cnfLeft, cnfRight.getLeftArg());
+
+				return new Conjunction(convertToCNF(newL), convertToCNF(newR));
+			}
+
+			//   |
+			// &   &
+			else if (
+					(cnfLeft instanceof Conjunction) &&
+							(cnfRight instanceof Conjunction)
+					)
+			{
+				Formula newL = new Conjunction (
+						new Disjunction (cnfLeft.getLeftArg(), cnfRight.getLeftArg()),
+						new Disjunction (cnfLeft.getRightArg(), cnfRight.getRightArg())
+				);
+				Formula newR = new Conjunction (
+						new Disjunction (cnfLeft.getLeftArg(), cnfRight.getLeftArg()),
+						new Disjunction (cnfLeft.getRightArg(), cnfRight.getLeftArg())
+				);
+
+				return new Conjunction(convertToCNF(newL), convertToCNF(newR));
+			}
+		}
+
+
+		if (f instanceof Biimplication)
+		{
+			Formula newL = new Disjunction (f.getLeftArg(), new Negation(f.getRightArg()));
+			Formula newR = new Disjunction (new Negation(f.getLeftArg()), f.getRightArg());
+
+			return convertToCNF(new Conjunction(
+					new Disjunction(f.getLeftArg(), new Negation(f.getRightArg())),
+					new Disjunction(new Negation(f.getLeftArg()), f.getRightArg())
+			));
+		}
+
+
+
+		if (f instanceof Implication)
+		{
+			return convertToCNF(
+					new Disjunction(
+							new Negation(f.getLeftArg()),
+							f.getRightArg()
+					)
+			);
+		}
+
+		//ERROR
 		return null;
 	}
 
-	/**
-	 * Apply distribution law
-	 *
-	 * @param f The left argument
-	 * @param g The right argument
-	 * @param h
-	 *
-	 * @return converted formula
-	 */
-	private static Formula distributionOne (Formula f, Formula g, Formula h) {
-		Disjunction newDisj = new Disjunction(g, h);
-		Conjunction newConj = new Conjunction(f, newDisj);
-
-		return newConj;
-	}
-
-	/**
-	 *
-	 *
-	 * @param f
-	 * @param g
-	 * @param h
-	 *
-	 * @return
-	 */
-	private static Formula distributionTwo (Formula f, Formula g, Formula h) {
-		Disjunction FoG = new Disjunction(f, g);
-		Disjunction FoH = new Disjunction(f, h);
-
-		Conjunction newConj = new Conjunction(FoG, FoH);
-
-		return newConj;
-	}
 
 	public static Formula convert(Formula transformedToSkolemNF) {
-		checkForCNF(transformedToSkolemNF);
-		return transformedToSkolemNF;
+		return convertToCNF(transformedToSkolemNF);
 	}
 
 }
