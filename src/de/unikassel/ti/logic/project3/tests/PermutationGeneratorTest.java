@@ -8,9 +8,10 @@ import org.junit.Test;
 import de.unikassel.ti.logic.project3.helper.PermutationGenerator;
 
 public class PermutationGeneratorTest {
-
+	
 	@Test
-	public void testGetNext() {
+	public void testForN2() {
+		
 		// n = ...
 		int numberOfVariables = 2;
 		
@@ -19,7 +20,38 @@ public class PermutationGeneratorTest {
 		ArrayList<Integer> currentPerm = permutation.getNext();
 		
 		// Verification
-		System.out.println(currentPerm.toString());
 		Assert.assertEquals("[0, 0]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[0, 1]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[1, 0]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[1, 1]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[0, 2]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[1, 2]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[2, 0]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[2, 1]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[2, 2]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[0, 3]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[1, 3]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[2, 3]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[3, 0]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[3, 1]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[3, 2]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[3, 3]", currentPerm.toString());
+		currentPerm = permutation.getNext();
+		Assert.assertEquals("[0, 4]", currentPerm.toString());
 	}
 }

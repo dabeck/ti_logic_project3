@@ -7,15 +7,19 @@ public class PermutationGenerator {
 	private ArrayList<Integer> termIndices = new ArrayList<Integer>();
 	private ArrayList<ArrayList<Integer>> permutations = new ArrayList<ArrayList<Integer>>();
 	
+	private ArrayList<ArrayList<Integer>> permHistory = new ArrayList<ArrayList<Integer>>();
+	
+	private int numberOfVariables = 0;
+	private int returnIndex = -1;
+	
 	/**
 	 * 
 	 * @param numberOfVariables
 	 */
 	public PermutationGenerator (int numberOfVariables) {
-		// Initialize termIndices List.
-		initTermIndices(numberOfVariables);
-		
-		this.permutations = new ArrayList<ArrayList<Integer>>();
+		this.numberOfVariables = numberOfVariables;
+		//this.termIndices.add(termIndices.size());
+		//permute("");
 	}
 
 	/**
@@ -23,7 +27,7 @@ public class PermutationGenerator {
 	 * @param numberOfVariables
 	 * @param start
 	 */
-	private void permute(int numberOfVariables, String start) {
+	private void permute(String start) {
 		if (start.length() >= numberOfVariables) {
 			char[] charArray = start.toCharArray();
 			ArrayList<Integer> arrayList = new ArrayList<Integer>();
@@ -35,32 +39,35 @@ public class PermutationGenerator {
 			}
 		} else {
 			for (Integer x : termIndices) {
-				permute(numberOfVariables, start + x);
+				permute(start + x);
 			}
-		}
-	}
-	
-	void initTermIndices(int numberOfVariables) {
-		termIndices.clear();
-		for (int i = 0; i != numberOfVariables; i++) {
-			termIndices.add(i);
 		}
 	}
 	
 	/**
 	 * Get the next permutation of the termIndices.
 	 * 
-	 * TODO: Check if there are permutations left,
-	 * which wasn't used before. Otherwise get the
-	 * next term from the herbrand universe and
-	 * generate new permutations. (Info: Be sure to
-	 * remember already returned permutations, to
-	 * prevent duplicates.)
-	 * 
-	 * @return
+	 * @return The Permutation of the termIndices of the herbrand universe.
 	 */
 	public ArrayList<Integer> getNext() {
-		return null;
+		
+		// run thru our list of permutations
+		do {
+			returnIndex++;
+			if (returnIndex == permutations.size()) {
+				// we reached end of current permutations-list,
+				// so we have to expand our termIndices-list,
+				// re-generate our permutations-list and
+				// reset out returnIndex
+				termIndices.add(termIndices.size());
+				permute("");
+				returnIndex = 0;
+			}
+		} while (permHistory.contains(permutations.get(returnIndex)));
+		
+		permHistory.add(permutations.get(returnIndex));
+		
+		return permutations.get(returnIndex);
 	}
 	
 }
